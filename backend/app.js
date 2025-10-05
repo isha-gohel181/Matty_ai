@@ -4,6 +4,10 @@ import cookieParser from "cookie-parser";
 import cors from "cors"
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 
+
+import userRouter from "./routes/user.route.js"
+import activityRouter from "./routes/activityLog.route.js"
+import adminRouter from "./routes/admin.route.js"
 const app = express();
 
 
@@ -30,6 +34,9 @@ app.use(cors({
 }));
 
 
+app.use("/api/v1/users", userRouter)
+app.use("/api/v1/activity", activityRouter)
+app.use("/api/v1/admin", adminRouter)
 
 
 
