@@ -9,7 +9,7 @@ import { destroyOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.uti
 import mongoose from "mongoose";
 import { sendEmail } from "../utils/mail.utils.js";
 import { cookieToken } from "../utils/cookie.utils.js";
-import { cloudinaaryAvatarRefer } from "../utils/constants.utils.js";
+import { cloudinaryAvatarRefer } from "../utils/constants.utils.js";
 
 // *================================================================================
 function generateEmailLinkTemplate(Token) {

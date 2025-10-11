@@ -107,7 +107,7 @@ export const getLoggedInUserInfo = createAsyncThunk(
   'user/getUserInfo',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/me', {
+      const response = await fetch('/api/v1/users/dashboard', {
         credentials: 'include',
       });
 
@@ -129,7 +129,7 @@ export const sendOtpToUser = createAsyncThunk(
   'user/sendOtp',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/send-otp', {
+      const response = await fetch('/api/v1/users/otp/send', {
         method: 'POST',
         credentials: 'include',
       });
@@ -152,7 +152,7 @@ export const verifyOtpForUser = createAsyncThunk(
   'user/verifyOtp',
   async (otpData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/verify-otp', {
+      const response = await fetch('/api/v1/users/otp/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ export const sendResetPasswordLinkToUser = createAsyncThunk(
   'user/sendResetLink',
   async (email, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/forgot-password', {
+      const response = await fetch('/api/v1/users/password/reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -231,7 +231,7 @@ export const changeCurrentPassword = createAsyncThunk(
   'user/changePassword',
   async (passwordData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/change-password', {
+      const response = await fetch('/api/v1/users/password/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -258,8 +258,8 @@ export const updateUserProfile = createAsyncThunk(
   'user/updateProfile',
   async (profileData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/update-profile', {
-        method: 'PATCH',
+      const response = await fetch('/api/v1/users/profile/update', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -288,8 +288,8 @@ export const updateUserAvatar = createAsyncThunk(
       const formData = new FormData();
       formData.append('avatar', avatarFile);
 
-      const response = await fetch('/api/v1/users/update-avatar', {
-        method: 'PATCH',
+      const response = await fetch('/api/v1/users/profile/avatar/update', {
+        method: 'POST',
         credentials: 'include',
         body: formData,
       });
@@ -312,7 +312,7 @@ export const deleteUser = createAsyncThunk(
   'user/deleteUser',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/delete', {
+      const response = await fetch('/api/v1/users/profile/delete', {
         method: 'DELETE',
         credentials: 'include',
       });
