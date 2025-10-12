@@ -32,6 +32,36 @@ export const getTemplateById = createAsyncThunk(
   }
 );
 
+// Create Template (Admin only)
+export const createTemplate = createAsyncThunk(
+  "template/createTemplate",
+  async (templateData, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append('title', templateData.title);
+      formData.append('excalidrawJSON', templateData.excalidrawJSON);
+      formData.append('category', templateData.category);
+      if (templateData.tags) {
+        formData.append('tags', templateData.tags);
+      }
+      if (templateData.thumbnail) {
+        formData.append('thumbnail', templateData.thumbnail);
+      }
+
+      const response = await fetch('/api/v1/templates/create', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) return rejectWithValue(data);
+      return data.template;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const initialState = {
   templates: [],
@@ -72,6 +102,18 @@ const templateSlice = createSlice({
         state.currentTemplate = action.payload;
       })
       .addCase(getTemplateById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Create Template
+      .addCase(createTemplate.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createTemplate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.templates.unshift(action.payload); // Add new template to the beginning
+      })
+      .addCase(createTemplate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

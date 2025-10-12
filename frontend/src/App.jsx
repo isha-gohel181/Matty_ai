@@ -37,6 +37,7 @@ const AnalyticsPage = lazy(() => import("./pages/DashboardPages/AnalyticsPage"))
 const AdminDashboard = lazy(() => import("./pages/DashboardPages/AdminDashboard"));
 const AdminUsers = lazy(() => import("./pages/DashboardPages/AdminUsers"));
 const AdminModeration = lazy(() => import("./pages/DashboardPages/AdminModeration"));
+const AdminTemplates = lazy(() => import("./pages/DashboardPages/AdminTemplates"));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -102,6 +103,7 @@ const App = () => {
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="admin/users" element={<AdminUsers />} />
           <Route path="admin/moderation" element={<AdminModeration />} />
+          <Route path="admin/templates" element={<AdminTemplates />} />
           {/* Add other dashboard routes here */}
         </Route>
 

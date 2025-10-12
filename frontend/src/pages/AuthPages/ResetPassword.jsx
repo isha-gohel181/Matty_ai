@@ -51,7 +51,7 @@ const ResetPassword = () => {
       {message && <CustomAlert type="success" message={message} onClose={() => setMessage('')} />}
       <Card className="w-full max-w-md border-0 bg-transparent shadow-none">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Reset Password</CardTitle>
+          <CardTitle className="text-2xl md:text-3xl font-bold">Reset Password</CardTitle>
           <CardDescription>Enter your new password below.</CardDescription>
         </CardHeader>
         <CardContent>

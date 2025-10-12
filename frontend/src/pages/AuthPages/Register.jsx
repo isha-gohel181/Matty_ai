@@ -53,7 +53,7 @@ const Register = () => {
       {error && <CustomAlert type="error" message={error} onClose={() => dispatch(clearError())} />}
       <Card className="w-full max-w-md border-0 bg-transparent shadow-none">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Create Account</CardTitle>
+          <CardTitle className="text-2xl md:text-3xl font-bold">Create Account</CardTitle>
           <CardDescription>Fill in your details to get started.</CardDescription>
         </CardHeader>
         <CardContent>

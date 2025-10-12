@@ -79,7 +79,7 @@ const DashboardActivity = () => {
 
   if (myActivitiesLoading) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
         </div>
@@ -89,7 +89,7 @@ const DashboardActivity = () => {
 
   if (error) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <Card className="border-red-200">
           <CardContent className="p-6">
             <div className="text-center text-red-600">
@@ -103,9 +103,9 @@ const DashboardActivity = () => {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Activity Log</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2">Activity Log</h1>
         <p className="text-muted-foreground">
           Track your recent activities and actions on the platform
         </p>

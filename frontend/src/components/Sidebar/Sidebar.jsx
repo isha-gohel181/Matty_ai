@@ -14,9 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, Settings, Sun, Moon } from "lucide-react";
+import { LogOut, User, Settings, Sun, Moon, X } from "lucide-react";
 
-const Sidebar = () => {
+const Sidebar = ({ onClose }) => {
   const location = useLocation();
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -43,14 +43,22 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-64 flex-shrink-0 border-r bg-background flex flex-col">
-      <div className="h-16 p-4 border-b flex items-center">
+    <aside className="w-64 flex-shrink-0 border-r bg-background flex flex-col h-full">
+      <div className="h-16 p-4 border-b flex items-center justify-between">
         <Link
           to="/"
           className="text-2xl font-bold text-foreground tracking-wide"
         >
           Matty
         </Link>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="md:hidden"
+          onClick={onClose}
+        >
+          <X className="h-5 w-5" />
+        </Button>
       </div>
       <nav className="flex-1 p-4 space-y-2">
         {navigationItems.map((item) => (

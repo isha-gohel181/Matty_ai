@@ -7,6 +7,7 @@ import imageReducer from "../slice/image/image.slice.js";
 import templateReducer from "../slice/template/template.slice.js";
 import favoriteReducer from "../slice/favorite/favorite.slice.js";
 import analyticsReducer from "../slice/analytics/analytics.slice.js";
+import aiReducer from "../slice/ai/ai.slice.js";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     template: templateReducer,
     favorite: favoriteReducer,
     analytics: analyticsReducer,
+    ai: aiReducer,
   },
 });

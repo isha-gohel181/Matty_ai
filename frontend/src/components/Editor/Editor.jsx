@@ -14,6 +14,7 @@ import {
   Download,
   FileText,
   Upload,
+  Sparkles,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -29,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import imageCompression from "browser-image-compression";
 import { exportToPdf } from "@/lib/export";
 import { useTheme } from "@/context/ThemeContext.jsx";
+import AiSuggestions from "./AiSuggestions";
 
 const Editor = () => {
   const { id } = useParams();
@@ -52,6 +54,7 @@ const Editor = () => {
   const [elements, setElements] = useState([]);
   const [key, setKey] = useState(0);
   const [autoSave, setAutoSave] = useState(false);
+  const [showAiSuggestions, setShowAiSuggestions] = useState(false);
 
   useEffect(() => {
     if (id) dispatch(getDesignById(id));
@@ -189,8 +192,8 @@ const Editor = () => {
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div className="h-16 p-4 bg-background border-b flex items-center gap-4">
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} className="w-1/3" />
+      <div className="h-16 p-2 md:p-4 bg-background border-b flex flex-wrap items-center gap-2 md:gap-4">
+        <Input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full md:w-1/3" />
 
         {error && <p className="text-red-500 text-sm">{error.message || JSON.stringify(error)}</p>}
         {imageError && <p className="text-red-500 text-sm">{imageError.message || JSON.stringify(imageError)}</p>}
@@ -212,6 +215,15 @@ const Editor = () => {
         <Button size="sm" variant="outline" onClick={() => fileInputRef.current.click()} disabled={imageLoading}>
           <Upload className="mr-2 h-4 w-4" />
           {imageLoading ? "Uploading..." : "Upload Image"}
+        </Button>
+
+        <Button 
+          size="sm" 
+          variant={showAiSuggestions ? "default" : "outline"} 
+          onClick={() => setShowAiSuggestions(!showAiSuggestions)}
+        >
+          <Sparkles className="mr-2 h-4 w-4" />
+          AI Suggestions
         </Button>
 
         <Button size="sm" onClick={() => handleExport("png")}>
@@ -257,6 +269,7 @@ const Editor = () => {
             <WelcomeScreen.Hints.HelpHint />
           </WelcomeScreen>
         </Excalidraw>
+        {showAiSuggestions && <AiSuggestions />}
       </div>
     </div>
   );

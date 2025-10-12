@@ -35,10 +35,10 @@ const AnalyticsPage = () => {
   const { overview, mostUsedTemplates, designActivity, popularCategories } = analytics;
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 md:p-8 space-y-8">
       <div className="flex items-center gap-3">
         <BarChart3 className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
+        <h1 className="text-2xl md:text-3xl font-bold">Analytics Dashboard</h1>
       </div>
 
       {/* Overview Cards */}

@@ -44,7 +44,7 @@ const ForgotPassword = () => {
       {message && <CustomAlert type="success" message={message} onClose={() => setMessage('')} />}
       <Card className="w-full max-w-md border-0 bg-transparent shadow-none">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Forgot Password</CardTitle>
+          <CardTitle className="text-2xl md:text-3xl font-bold">Forgot Password</CardTitle>
           <CardDescription>Enter your email to receive a password reset link.</CardDescription>
         </CardHeader>
         <CardContent>

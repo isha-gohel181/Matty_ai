@@ -16,7 +16,7 @@ const AuthPageLayout = () => {
         </div>
 
         {/* Right Panel: Form Content */}
-        <div className="bg-card text-card-foreground flex items-center justify-center p-8">
+        <div className="bg-card text-card-foreground flex items-center justify-center p-4 md:p-8">
           <Outlet />
         </div>
       </div>

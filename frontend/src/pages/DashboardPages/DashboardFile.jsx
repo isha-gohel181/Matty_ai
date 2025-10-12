@@ -123,8 +123,8 @@ const DashboardFile = () => {
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8">My Designs</h1>
+    <div className="p-4 md:p-8">
+      <h1 className="text-2xl md:text-3xl font-bold mb-8">My Designs</h1>
       
       {/* Search Bar */}
       <div className="mb-6 relative">
@@ -134,7 +134,7 @@ const DashboardFile = () => {
           placeholder="Search designs by title or tags..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="pl-10 max-w-md"
+          className="pl-10 w-full md:max-w-md"
         />
       </div>
       
