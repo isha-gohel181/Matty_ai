@@ -11,8 +11,8 @@ const TemplatesSection = () => {
     return (
         <section id="templates" className="py-20 sm:py-32">
             <div className="mx-auto max-w-screen-xl px-4">
-                <h2 className="text-center text-4xl font-bold">Kickstart Your Creativity</h2>
-                <p className="text-center mt-4 text-gray-400">Explore templates for every need.</p>
+                <h2 className="text-center text-4xl font-bold text-foreground">Kickstart Your Creativity</h2>
+                <p className="text-center mt-4 text-muted-foreground">Explore templates for every need.</p>
                 <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {templates.map((template, index) => (
                         <motion.div

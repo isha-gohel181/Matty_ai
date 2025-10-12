@@ -14,6 +14,7 @@ const Layout = lazy(() => import("./components/Layout/Layout"));
 const Register = lazy(() => import("./pages/AuthPages/Register"));
 const Login = lazy(() => import("./pages/AuthPages/Login"));
 const ForgotPassword = lazy(() => import("./pages/AuthPages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/AuthPages/ResetPassword")); // Import ResetPassword
 const AuthPageLayout = lazy(() => import("./components/Layout/AuthPageLayout"));
 
 // Import the new DashboardLayout
@@ -22,11 +23,19 @@ const DashboardLayout = lazy(() => import("./components/Layout/DashboardLayout")
 const DashboardProfile = lazy(() =>
   import("./pages/DashboardPages/DashboardProfile")
 );
+const TemplatesPage = lazy(() =>
+  import("./pages/DashboardPages/TemplatesPage")
+);
 const DashboardActivity = lazy(() =>
   import("./pages/DashboardPages/DashboardActivity")
 );
 const DashboardFiles = lazy(() => import("./pages/DashboardPages/DashboardFile"));
 const EditorPage = lazy(() => import("./pages/DashboardPages/EditorPage"));
+
+// Admin Pages
+const AdminDashboard = lazy(() => import("./pages/DashboardPages/AdminDashboard"));
+const AdminUsers = lazy(() => import("./pages/DashboardPages/AdminUsers"));
+const AdminModeration = lazy(() => import("./pages/DashboardPages/AdminModeration"));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -34,10 +43,9 @@ const App = () => {
   const [isAppLoading, setIsAppLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(getLoggedInUserInfo()).finally(() => {
-      setIsAppLoading(false);
-    });
-  }, [dispatch]);
+    // On refresh, do not check authentication, redirect to home
+    setIsAppLoading(false);
+  }, []);
 
   const FullPageLoader = () => (
     <div className="flex items-center justify-center h-screen bg-background">
@@ -56,9 +64,7 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route
             index
-            element={
-              isAuthenticated ? <Navigate to="/dashboard/files" /> : <Home />
-            }
+            element={<Home />}
           />
         </Route>
 
@@ -66,17 +72,14 @@ const App = () => {
         <Route element={<AuthPageLayout />}>
           <Route
             path="/login"
-            element={
-              isAuthenticated ? <Navigate to="/dashboard/files" /> : <Login />
-            }
+            element={<Login />}
           />
           <Route
             path="/signup"
-            element={
-              isAuthenticated ? <Navigate to="/dashboard/files" /> : <Register />
-            }
+            element={<Register />}
           />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} /> {/* Add this route */}
         </Route>
 
         {/* Protected Dashboard Routes with Layout */}
@@ -93,6 +96,10 @@ const App = () => {
           <Route path="editor/:id" element={<EditorPage />} />
           <Route path="profile" element={<DashboardProfile />} />
           <Route path="activity" element={<DashboardActivity />} />
+          <Route path="templates" element={<TemplatesPage />} /> 
+          <Route path="admin" element={<AdminDashboard />} />
+          <Route path="admin/users" element={<AdminUsers />} />
+          <Route path="admin/moderation" element={<AdminModeration />} />
           {/* Add other dashboard routes here */}
         </Route>
 

@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import { sendEmail } from "../utils/mail.utils.js";
 import { cookieToken } from "../utils/cookie.utils.js";
 import { cloudinaryAvatarRefer } from "../utils/constants.utils.js";
+import { logActivity } from "../utils/logActivity.js";
 
 // *================================================================================
 function generateEmailLinkTemplate(Token) {
@@ -23,7 +24,7 @@ function generateEmailLinkTemplate(Token) {
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f7f7f7;">
 <div>
 <h3>
-<a href="http://localhost:3000/password/reset/${Token}">Click here to reset password</a>
+<a href="http://localhost:5173/reset-password/${Token}">Click here to reset password</a>
 </h3>
 </div>
 </body>
@@ -152,6 +153,9 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
         await cookieToken(user, res)
 
+        // Log registration activity
+        await logActivity(user._id, "register", `User registered with email: ${email}`, req);
+
 
 
     } catch (error) {
@@ -200,6 +204,9 @@ const loginUser = asyncHandler(async (req, res, next) => {
         }
 
         cookieToken(user, res)
+        
+        // Log login activity
+        await logActivity(user._id, "login", "User logged in successfully", req);
     } catch (error) {
         return next(new ErrorHandler(`Something went wrong..details - ${error.message}`, 500))
     }
@@ -231,6 +238,9 @@ const logoutUser = asyncHandler(async (req, res, next) => {
             httpOnly: true,
             secure: true
         }
+
+        // Log logout activity
+        await logActivity(userId, "logout", "User logged out successfully", req);
 
         return res
             .status(200)

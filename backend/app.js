@@ -7,7 +7,10 @@ import { errorMiddleware } from "./middlewares/error.middleware.js";
 import userRouter from "./routes/user.route.js";
 import activityRouter from "./routes/activityLog.route.js";
 import adminRouter from "./routes/admin.route.js";
-import designRouter from "./routes/design.route.js"; // Import the new router
+import designRouter from "./routes/design.route.js"; 
+// import imageRouter from "./routes/image.route.js";
+import templateRouter from "./routes/template.route.js";
+import favoriteRouter from "./routes/favorite.route.js";
 
 const app = express();
 
@@ -37,7 +40,10 @@ app.use(
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/activity", activityRouter);
 app.use("/api/v1/admin", adminRouter);
-app.use("/api/v1/designs", designRouter); // Use the new design router
+app.use("/api/v1/designs", designRouter); 
+// app.use("/api/v1/images", imageRouter);
+app.use("/api/v1/templates", templateRouter);
+app.use("/api/v1/favorites", favoriteRouter);
 
 app.use(errorMiddleware);
 // *End-Of-Neccessary-Middlewares

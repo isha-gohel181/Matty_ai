@@ -9,7 +9,7 @@ import CallToAction from "@/components/Home/CallToAction";
 
 const Home = () => {
   return (
-    <div className="bg-[#111111] text-white">
+    <div className="bg-background text-foreground">
         <main>
             <HeroSection />
             <FeaturesSection />

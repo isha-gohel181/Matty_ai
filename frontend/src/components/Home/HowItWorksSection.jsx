@@ -21,10 +21,10 @@ const steps = [
 
 const HowItWorksSection = () => {
   return (
-    <section id="how-it-works" className="py-20 sm:py-32 bg-[#1a1a1a]">
+    <section id="how-it-works" className="py-20 sm:py-32 bg-muted/20">
       <div className="mx-auto max-w-screen-xl px-4">
-        <h2 className="text-center text-4xl font-bold">Create in 3 Simple Steps</h2>
-        <p className="text-center mt-4 text-gray-400">A seamless workflow from idea to masterpiece.</p>
+        <h2 className="text-center text-4xl font-bold text-foreground">Create in 3 Simple Steps</h2>
+        <p className="text-center mt-4 text-muted-foreground">A seamless workflow from idea to masterpiece.</p>
         <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
           {steps.map((step, index) => (
             <motion.div
@@ -33,13 +33,13 @@ const HowItWorksSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
               transition={{ delay: index * 0.2, duration: 0.5 }}
-              className="rounded-xl border border-white/10 bg-white/5 p-8 text-center"
+              className="rounded-xl border border-border bg-card/50 p-8 text-center"
             >
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-teal-500">
                 {step.icon}
               </div>
-              <h3 className="mt-6 text-xl font-semibold">{step.title}</h3>
-              <p className="mt-2 text-gray-400">{step.description}</p>
+              <h3 className="mt-6 text-xl font-semibold text-foreground">{step.title}</h3>
+              <p className="mt-2 text-muted-foreground">{step.description}</p>
             </motion.div>
           ))}
         </div>

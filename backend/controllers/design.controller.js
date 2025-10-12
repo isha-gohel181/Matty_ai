@@ -6,17 +6,19 @@ import {
   destroyOnCloudinary,
 } from "../utils/cloudinary.utils.js";
 import { cloudinaryImageRefer } from "../utils/constants.utils.js";
+import { logActivity } from "../utils/logActivity.js";
 
 // @desc    Create a new design
 // @route   POST /api/v1/designs
 // @access  Private
 const createDesign = asyncHandler(async (req, res, next) => {
   console.log("createDesign called");
-  const { title, excalidrawJSON } = req.body;
+  const { title, excalidrawJSON, tags } = req.body;
   const thumbnailLocalPath = req.file?.path;
 
   console.log("title:", title);
   console.log("excalidrawJSON:", excalidrawJSON);
+  console.log("tags:", tags);
   console.log("thumbnailLocalPath:", thumbnailLocalPath);
   console.log("req.file:", req.file);
 
@@ -47,7 +49,11 @@ const createDesign = asyncHandler(async (req, res, next) => {
       public_id: thumbnail.public_id,
       secure_url: thumbnail.secure_url,
     },
+    tags: tags || [],
   });
+
+  // Log activity
+  await logActivity(req.user._id, "upload", `Created design: ${title}`, req);
 
   res.status(201).json({
     success: true,
@@ -60,7 +66,17 @@ const createDesign = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/designs
 // @access  Private
 const getMyDesigns = asyncHandler(async (req, res, next) => {
-  const designs = await Design.find({ user: req.user._id }).sort({
+  const { search } = req.query;
+  let query = { user: req.user._id };
+
+  if (search) {
+    query.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { tags: { $in: [new RegExp(search, 'i')] } }
+    ];
+  }
+
+  const designs = await Design.find(query).sort({
     updatedAt: -1,
   });
 
@@ -94,7 +110,7 @@ const getDesignById = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/designs/:id
 // @access  Private
 const updateDesign = asyncHandler(async (req, res, next) => {
-  const { title, excalidrawJSON } = req.body;
+  const { title, excalidrawJSON, tags } = req.body;
   const thumbnailLocalPath = req.file?.path;
 
   let design = await Design.findById(req.params.id);
@@ -109,6 +125,7 @@ const updateDesign = asyncHandler(async (req, res, next) => {
 
   design.title = title || design.title;
   design.excalidrawJSON = excalidrawJSON || design.excalidrawJSON;
+  design.tags = tags !== undefined ? tags : design.tags;
 
   if (thumbnailLocalPath) {
     await destroyOnCloudinary(
@@ -128,6 +145,9 @@ const updateDesign = asyncHandler(async (req, res, next) => {
   }
 
   const updatedDesign = await design.save();
+
+  // Log activity
+  await logActivity(req.user._id, "update", `Updated design: ${title}`, req);
 
   res.status(200).json({
     success: true,
@@ -152,6 +172,9 @@ const deleteDesign = asyncHandler(async (req, res, next) => {
 
   await destroyOnCloudinary(design.thumbnailUrl.public_id, cloudinaryImageRefer);
   await design.deleteOne();
+
+  // Log activity
+  await logActivity(req.user._id, "delete", `Deleted design: ${design.title}`, req);
 
   res.status(200).json({
     success: true,

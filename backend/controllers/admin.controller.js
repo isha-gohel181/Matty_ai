@@ -9,6 +9,8 @@ import bcrypt from "bcryptjs"
 import crypto from "crypto"
 
 import { User } from "../models/user.model.js";
+import { Design } from "../models/design.model.js";
+import { ActivityLog } from "../models/activityLog.model.js";
 import { destroyOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 
 
@@ -232,10 +234,121 @@ const adminDeleteUser = asyncHandler(async (req, res, next) => {
 });
 
 
+const getAdminStats = asyncHandler(async (req, res, next) => {
+    try {
+        // Get total users count
+        const totalUsers = await User.countDocuments();
+
+        // Get total designs count
+        const totalDesigns = await Design.countDocuments();
+
+        // Get users registered today
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const usersToday = await User.countDocuments({
+            createdAt: { $gte: today }
+        });
+
+        // Get designs created today
+        const designsToday = await Design.countDocuments({
+            createdAt: { $gte: today }
+        });
+
+        // Get recent activities (last 24 hours)
+        const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const recentActivities = await ActivityLog.aggregate([
+            { $unwind: "$activities" },
+            { $match: { "activities.createdAt": { $gte: yesterday } } },
+            { $group: { _id: null, count: { $sum: 1 } } }
+        ]);
+
+        // Get user role distribution
+        const userRoles = await User.aggregate([
+            { $group: { _id: "$role", count: { $sum: 1 } } }
+        ]);
+
+        // Get top active users (most designs)
+        const topActiveUsers = await Design.aggregate([
+            { $group: { _id: "$user", designCount: { $sum: 1 } } },
+            { $sort: { designCount: -1 } },
+            { $limit: 5 },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            { $unwind: "$user" },
+            {
+                $project: {
+                    _id: "$user._id",
+                    fullName: "$user.fullName",
+                    email: "$user.email",
+                    designCount: 1
+                }
+            }
+        ]);
+
+        // Get activity trends (last 7 days)
+        const activityTrends = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            date.setHours(0, 0, 0, 0);
+            const nextDay = new Date(date);
+            nextDay.setDate(nextDay.getDate() + 1);
+
+            const dayActivities = await ActivityLog.aggregate([
+                { $unwind: "$activities" },
+                {
+                    $match: {
+                        "activities.createdAt": {
+                            $gte: date,
+                            $lt: nextDay
+                        }
+                    }
+                },
+                { $group: { _id: null, count: { $sum: 1 } } }
+            ]);
+
+            activityTrends.push({
+                date: date.toISOString().split('T')[0],
+                activities: dayActivities.length > 0 ? dayActivities[0].count : 0
+            });
+        }
+
+        const stats = {
+            overview: {
+                totalUsers,
+                totalDesigns,
+                usersToday,
+                designsToday,
+                recentActivities: recentActivities.length > 0 ? recentActivities[0].count : 0
+            },
+            userRoles,
+            topActiveUsers,
+            activityTrends
+        };
+
+        res.status(200).json({
+            success: true,
+            stats,
+            message: "Admin statistics retrieved successfully"
+        });
+    } catch (error) {
+        console.error("Error getting admin stats:", error);
+        return next(new ErrorHandler("Failed to retrieve admin statistics", 500));
+    }
+});
+
+
 export {
     getAllUsers,
     getOneUser,
     adminUpdateUserProfile,
     adminUpdateUserAvatar,
-    adminDeleteUser
+    adminDeleteUser,
+    getAdminStats
 }

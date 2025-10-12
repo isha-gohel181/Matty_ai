@@ -4,10 +4,17 @@ import {
   MainMenu,
   WelcomeScreen,
   exportToBlob,
+  exportToSvg,
 } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import { Button } from "@/components/ui/button";
-import { Save, Trash2 } from "lucide-react";
+import {
+  Save,
+  Trash2,
+  Download,
+  FileText,
+  Upload,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createDesign,
@@ -15,46 +22,116 @@ import {
   updateDesign,
   clearCurrentDesign,
 } from "@/redux/slice/design/design.slice";
-import { useParams, useNavigate } from "react-router-dom";
+import { getTemplateById, clearCurrentTemplate } from "@/redux/slice/template/template.slice";
+import { uploadImage } from "@/redux/slice/image/image.slice";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import imageCompression from "browser-image-compression";
+import { exportToPdf } from "@/lib/export";
+import { useTheme } from "@/context/ThemeContext.jsx";
 
 const Editor = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { currentDesign, loading, error } = useSelector((state) => state.design);
+  const { currentDesign, loading, error } = useSelector(
+    (state) => state.design
+  );
+  const { currentTemplate } = useSelector((state) => state.template);
+  const { imageUrl, loading: imageLoading, error: imageError } = useSelector(
+    (state) => state.image
+  );
+
+  const { theme } = useTheme();
+
   const excalidrawRef = useRef(null);
+  const fileInputRef = useRef(null);
+
   const [title, setTitle] = useState("Untitled Design");
   const [elements, setElements] = useState([]);
+  const [key, setKey] = useState(0);
+  const [autoSave, setAutoSave] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      dispatch(getDesignById(id));
-    }
-    return () => {
-      dispatch(clearCurrentDesign());
-    };
+    if (id) dispatch(getDesignById(id));
+    return () => dispatch(clearCurrentDesign());
   }, [id, dispatch]);
-
-  const [key, setKey] = useState(0);
 
   useEffect(() => {
     if (currentDesign) {
       const loadedElements = JSON.parse(currentDesign.excalidrawJSON);
       setElements(loadedElements);
       setTitle(currentDesign.title);
-      setKey(prev => prev + 1); // Force remount
+      setKey((prev) => prev + 1);
     }
   }, [currentDesign]);
 
-  const handleSave = async () => {
-    console.log("handleSave called");
+  useEffect(() => {
+    const templateId = searchParams.get('template');
+    if (templateId) {
+      dispatch(getTemplateById(templateId));
+    }
+    return () => dispatch(clearCurrentTemplate());
+  }, [searchParams, dispatch]);
+
+  useEffect(() => {
+    if (currentTemplate) {
+      const loadedElements = JSON.parse(currentTemplate.excalidrawJSON);
+      setElements(loadedElements);
+      setTitle(currentTemplate.title);
+      setKey((prev) => prev + 1);
+    }
+  }, [currentTemplate]);
+
+  useEffect(() => {
+    let interval;
+    if (autoSave) {
+      interval = setInterval(() => {
+        handleSave();
+      }, 30000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [autoSave, elements, title]);
+
+  // 🟨 Handle Image Upload
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
     try {
-      console.log("elements:", elements);
-      if (!elements || elements.length === 0) {
-        console.log("No elements to save");
-        return;
-      }
+      const compressedFile = await imageCompression(file, options);
+      dispatch(uploadImage(compressedFile)).then((action) => {
+        if (uploadImage.fulfilled.match(action)) {
+          const imageUrl = action.payload.imageUrl;
+          const imageElement = {
+            type: "image",
+            x: 100,
+            y: 100,
+            width: 500,
+            height: 500,
+            fileId: imageUrl,
+          };
+          setElements((prev) => [...prev, imageElement]);
+        }
+      });
+    } catch (error) {
+      console.error("Error compressing image:", error);
+    }
+  };
+
+  // 🟩 Save / Update Design
+  const handleSave = async () => {
+    try {
+      if (!elements || elements.length === 0) return;
 
       const blob = await exportToBlob({
         elements,
@@ -70,7 +147,6 @@ const Editor = () => {
       formData.append("excalidrawJSON", JSON.stringify(elements));
       formData.append("thumbnail", blob, `${title.replace(/\s+/g, "-")}.png`);
 
-      console.log("Dispatching save action");
       if (id) {
         dispatch(updateDesign({ id, designData: formData }));
       } else {
@@ -85,45 +161,88 @@ const Editor = () => {
     }
   };
 
+  // 🟦 Export PNG / PDF
+  const handleExport = async (format) => {
+    if (!elements || elements.length === 0) return;
+
+    const appState = {
+      exportBackground: true,
+      exportWithDarkMode: false,
+    };
+
+    if (format === "png") {
+      const blob = await exportToBlob({ elements, appState, mimeType: "image/png" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${title}.png`;
+      link.click();
+    } else if (format === "pdf") {
+      const svg = await exportToSvg({ elements, appState });
+      exportToPdf(svg, `${title}.pdf`);
+    }
+  };
+
   const initialData = {
-    elements: elements,
-    appState: {
-      gridSize: null,
-    },
+    elements,
+    appState: { gridSize: null },
   };
 
   return (
-    <div style={{ height: "100vh ", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <div className="h-16 p-4 bg-background border-b flex items-center gap-4">
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-1/3"
-        />
+        <Input value={title} onChange={(e) => setTitle(e.target.value)} className="w-1/3" />
+
         {error && <p className="text-red-500 text-sm">{error.message || JSON.stringify(error)}</p>}
+        {imageError && <p className="text-red-500 text-sm">{imageError.message || JSON.stringify(imageError)}</p>}
+
         <div className="flex-grow" />
-        <Button size="sm" onClick={handleSave} disabled={loading}>
-          <Save className="mr-2 h-4 w-4" /> {loading ? "Saving..." : "Save"}
+
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="autoSave"
+            checked={autoSave}
+            onChange={(e) => setAutoSave(e.target.checked)}
+          />
+          <label htmlFor="autoSave" className="text-sm">Auto-Save</label>
+        </div>
+
+        <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" style={{ display: "none" }} />
+
+        <Button size="sm" variant="outline" onClick={() => fileInputRef.current.click()} disabled={imageLoading}>
+          <Upload className="mr-2 h-4 w-4" />
+          {imageLoading ? "Uploading..." : "Upload Image"}
         </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            setElements([]);
-            setTitle("Untitled Design");
-            setKey(prev => prev + 1);
-            navigate("/dashboard/editor");
-          }}
-        >
+
+        <Button size="sm" onClick={() => handleExport("png")}>
+          <Download className="mr-2 h-4 w-4" /> PNG
+        </Button>
+
+        <Button size="sm" onClick={() => handleExport("pdf")}>
+          <FileText className="mr-2 h-4 w-4" /> PDF
+        </Button>
+
+        <Button size="sm" onClick={handleSave} disabled={loading}>
+          <Save className="mr-2 h-4 w-4" />
+          {loading ? "Saving..." : "Save"}
+        </Button>
+
+        <Button size="sm" variant="outline" onClick={() => {
+          setElements([]);
+          setTitle("Untitled Design");
+          setKey((prev) => prev + 1);
+          navigate("/dashboard/editor");
+        }}>
           <Trash2 className="mr-2 h-4 w-4" /> New
         </Button>
       </div>
+
       <div style={{ flex: 1 }}>
         <Excalidraw
           key={key}
           ref={excalidrawRef}
           initialData={initialData}
-          theme="dark"
+          theme={theme}
           onChange={(excalidrawElements) => setElements(excalidrawElements)}
         >
           <MainMenu>
@@ -131,7 +250,6 @@ const Editor = () => {
             <MainMenu.DefaultItems.SaveAsImage />
             <MainMenu.DefaultItems.Export />
             <MainMenu.DefaultItems.Help />
-            <MainMenu.DefaultItems.ToggleTheme />
           </MainMenu>
           <WelcomeScreen>
             <WelcomeScreen.Hints.MenuHint />

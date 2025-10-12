@@ -8,7 +8,7 @@ const HeroSection = () => {
 
   return (
     <section className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center text-center pt-16">
-      <div className="absolute top-0 left-0 -z-10 h-full w-full bg-[#111111]" />
+      <div className="absolute top-0 left-0 -z-10 h-full w-full bg-background" />
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -16,10 +16,10 @@ const HeroSection = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="container flex max-w-4xl flex-col items-center gap-6"
       >
-        <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl">
+        <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl text-foreground">
           One Tool, Infinite Creativity.
         </h1>
-        <p className="max-w-xl text-lg text-gray-400 sm:text-xl">
+        <p className="max-w-xl text-lg text-muted-foreground sm:text-xl">
           Matty is your AI-powered design partner for creating stunning posters,
           banners, and social media graphics in minutes.
         </p>

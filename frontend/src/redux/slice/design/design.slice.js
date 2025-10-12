@@ -21,9 +21,12 @@ export const createDesign = createAsyncThunk(
 
 export const getMyDesigns = createAsyncThunk(
   "design/getMyDesigns",
-  async (_, { rejectWithValue }) => {
+  async (searchQuery = "", { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/v1/designs", {
+      const url = searchQuery 
+        ? `/api/v1/designs?search=${encodeURIComponent(searchQuery)}`
+        : "/api/v1/designs";
+      const response = await fetch(url, {
         credentials: "include",
       });
       const data = await response.json();

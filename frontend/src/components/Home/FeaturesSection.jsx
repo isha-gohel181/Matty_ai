@@ -48,7 +48,7 @@ const FeaturesSection = () => {
 
       <div className="mx-auto max-w-screen-xl px-4">
 
-        <h2 className="text-center text-4xl font-bold">Everything You Need to Create</h2>
+        <h2 className="text-center text-4xl font-bold text-foreground">Everything You Need to Create</h2>
 
         <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
 
@@ -66,7 +66,7 @@ const FeaturesSection = () => {
 
               transition={{ delay: index * 0.2, duration: 0.5 }}
 
-              className="rounded-xl border border-white/10 bg-white/5 p-8 text-center"
+              className="rounded-xl border border-border bg-card/50 p-8 text-center"
 
             >
 
@@ -76,9 +76,9 @@ const FeaturesSection = () => {
 
               </div>
 
-              <h3 className="mt-6 text-xl font-semibold">{feature.title}</h3>
+              <h3 className="mt-6 text-xl font-semibold text-foreground">{feature.title}</h3>
 
-              <p className="mt-2 text-gray-400">{feature.description}</p>
+              <p className="mt-2 text-muted-foreground">{feature.description}</p>
 
             </motion.div>
 

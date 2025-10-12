@@ -1,15 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
-const designSchema = new Schema(
+const templateSchema = new Schema(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
     title: {
       type: String,
-      required: [true, "Design title is required."],
+      required: [true, "Template title is required."],
       trim: true,
       maxlength: [100, "Title cannot be more than 100 characters."],
     },
@@ -27,13 +22,14 @@ const designSchema = new Schema(
         required: true,
       },
     },
-    tags: [{
+    category: {
       type: String,
-      trim: true,
-      maxlength: [30, "Tag cannot be more than 30 characters."],
-    }],
+      required: true,
+      default: "General",
+    },
+    tags: [String],
   },
   { timestamps: true }
 );
 
-export const Design = mongoose.model("Design", designSchema);
+export const Template = mongoose.model("Template", templateSchema);

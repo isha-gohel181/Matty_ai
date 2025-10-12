@@ -1,12 +1,18 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Sun, Moon } from "lucide-react";
 import { useState } from "react";
+import { useTheme } from "@/context/ThemeContext.jsx";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
 
   const navLinks = [
     { name: "Features", href: "#features" },
@@ -21,10 +27,10 @@ const Header = () => {
       className="fixed top-0 left-0 right-0 z-50"
     >
       <div className="mx-auto max-w-screen-xl px-4 py-3">
-        <div className="flex items-center justify-between rounded-full bg-white/5 backdrop-blur-xl border border-white/10 p-3 px-6 shadow-lg">
+        <div className="flex items-center justify-between rounded-full bg-card/80 backdrop-blur-xl border border-border p-3 px-6 shadow-lg">
           
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-white tracking-wide">
+          <Link to="/" className="text-2xl font-bold text-foreground tracking-wide">
             Matty
           </Link>
 
@@ -34,7 +40,7 @@ const Header = () => {
               <a
                 key={idx}
                 href={link.href}
-                className="text-white/80 hover:text-white transition-colors font-medium"
+                className="text-foreground/80 hover:text-foreground transition-colors font-medium"
               >
                 {link.name}
               </a>
@@ -44,9 +50,17 @@ const Header = () => {
           {/* Buttons */}
           <div className="hidden md:flex items-center gap-3">
             <Button
+              onClick={toggleTheme}
+              variant="ghost"
+              size="sm"
+              className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition"
+            >
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
+            <Button
               onClick={() => navigate('/login')}
               variant="ghost"
-              className="rounded-full text-white/80 hover:text-white hover:bg-white/10 transition"
+              className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition"
             >
               Log In
             </Button>
@@ -62,7 +76,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <Menu
-              className="text-white w-6 h-6 cursor-pointer"
+              className="text-foreground w-6 h-6 cursor-pointer"
               onClick={() => setOpen(!open)}
             />
           </div>
@@ -70,12 +84,12 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {open && (
-          <div className="md:hidden mt-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 flex flex-col gap-4 shadow-lg">
+          <div className="md:hidden mt-2 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-4 flex flex-col gap-4 shadow-lg">
             {navLinks.map((link, idx) => (
               <a
                 key={idx}
                 href={link.href}
-                className="text-white/80 hover:text-white transition-colors font-medium"
+                className="text-foreground/80 hover:text-foreground transition-colors font-medium"
                 onClick={() => setOpen(false)}
               >
                 {link.name}
@@ -83,7 +97,7 @@ const Header = () => {
             ))}
             <Link
               to="/login"
-              className="text-white/80 hover:text-white transition font-medium"
+              className="text-foreground/80 hover:text-foreground transition font-medium"
             >
               Log In
             </Link>
