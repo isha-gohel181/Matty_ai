@@ -21,6 +21,12 @@ export const navigationItems = [
         path: "/dashboard/templates",
     },
     {
+        name: "Analytics",
+        icon: BarChart2,
+        badge: null,
+        path: "/dashboard/analytics",
+    },
+    {
         name: "Activity",
         icon: Activity,
         badge: "3",

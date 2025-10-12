@@ -6,6 +6,7 @@ import designReducer from "../slice/design/design.slice.js";
 import imageReducer from "../slice/image/image.slice.js";
 import templateReducer from "../slice/template/template.slice.js";
 import favoriteReducer from "../slice/favorite/favorite.slice.js";
+import analyticsReducer from "../slice/analytics/analytics.slice.js";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     image: imageReducer,
     template: templateReducer,
     favorite: favoriteReducer,
+    analytics: analyticsReducer,
   },
 });

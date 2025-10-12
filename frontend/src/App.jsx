@@ -31,6 +31,7 @@ const DashboardActivity = lazy(() =>
 );
 const DashboardFiles = lazy(() => import("./pages/DashboardPages/DashboardFile"));
 const EditorPage = lazy(() => import("./pages/DashboardPages/EditorPage"));
+const AnalyticsPage = lazy(() => import("./pages/DashboardPages/AnalyticsPage"));
 
 // Admin Pages
 const AdminDashboard = lazy(() => import("./pages/DashboardPages/AdminDashboard"));
@@ -96,7 +97,8 @@ const App = () => {
           <Route path="editor/:id" element={<EditorPage />} />
           <Route path="profile" element={<DashboardProfile />} />
           <Route path="activity" element={<DashboardActivity />} />
-          <Route path="templates" element={<TemplatesPage />} /> 
+          <Route path="templates" element={<TemplatesPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="admin/users" element={<AdminUsers />} />
           <Route path="admin/moderation" element={<AdminModeration />} />

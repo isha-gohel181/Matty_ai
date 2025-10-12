@@ -11,6 +11,7 @@ import designRouter from "./routes/design.route.js";
 // import imageRouter from "./routes/image.route.js";
 import templateRouter from "./routes/template.route.js";
 import favoriteRouter from "./routes/favorite.route.js";
+import analyticsRouter from "./routes/analytics.route.js";
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api/v1/designs", designRouter);
 // app.use("/api/v1/images", imageRouter);
 app.use("/api/v1/templates", templateRouter);
 app.use("/api/v1/favorites", favoriteRouter);
+app.use("/api/v1/analytics", analyticsRouter);
 
 app.use(errorMiddleware);
 // *End-Of-Neccessary-Middlewares
