@@ -45,8 +45,12 @@ app.use(
   //   },
   //   credentials: true,
   // })
- cors: { origin: process.env.CORS_ORIGIN,
-  credentials: true}// ✅ Allow frontend to connect credentials: true }
+cors({
+  origin: process.env.CORS_ORIGIN || "https://matty-ai-draw.vercel.app",
+  credentials: true,
+  // methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+}));
+
 );
 
 app.use("/api/v1/users", userRouter);
