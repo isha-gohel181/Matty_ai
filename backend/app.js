@@ -34,21 +34,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // const allowedOrigins = process.env.CORS_ORIGIN.split(",");
-const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
 
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
 
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin ||allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },  
-    credentials: true
-}));
-
+app.use(cors(corsOptions));
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/activity", activityRouter);
