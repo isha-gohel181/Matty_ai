@@ -12,7 +12,8 @@ import {
   UserCheck,
   Calendar,
   Shield,
-  LayoutTemplate
+  LayoutTemplate,
+  CreditCard
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -145,6 +146,12 @@ const AdminDashboard = () => {
             <Link to="/dashboard/admin/templates">
               <LayoutTemplate className="mr-2 h-4 w-4" />
               Manage Templates
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link to="/dashboard/admin/payments">
+              <CreditCard className="mr-2 h-4 w-4" />
+              Payment Management
             </Link>
           </Button>
         </div>

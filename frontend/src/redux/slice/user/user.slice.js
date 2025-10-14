@@ -108,7 +108,11 @@ export const getLoggedInUserInfo = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await fetch('/api/v1/users/dashboard', {
-        credentials: 'include',
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await response.json();
@@ -439,6 +443,13 @@ const userSlice = createSlice({
         state.refreshToken = action.payload.refreshToken;
         state.success = true;
         state.message = action.payload.message || 'Login successful!';
+        // Store tokens in localStorage
+        if (action.payload.accessToken) {
+          localStorage.setItem('accessToken', action.payload.accessToken);
+        }
+        if (action.payload.refreshToken) {
+          localStorage.setItem('refreshToken', action.payload.refreshToken);
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.authLoading = false;
@@ -461,6 +472,9 @@ const userSlice = createSlice({
         state.isRegistered = false;
         state.success = true;
         state.message = 'Logged out successfully!';
+        // Remove tokens from localStorage
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
@@ -500,12 +514,29 @@ const userSlice = createSlice({
       .addCase(getLoggedInUserInfo.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        // Set accessToken from localStorage if available
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          state.accessToken = token;
+        }
         state.success = true;
       })
       .addCase(getLoggedInUserInfo.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'Failed to fetch user info';
-        state.user = null;
+        // If API call fails but we have a token in localStorage, still consider user authenticated
+        // This handles cases where backend is temporarily unavailable
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          state.accessToken = token;
+          // Don't set user data, but keep authentication state
+          state.error = 'Unable to fetch user data. Some features may be limited.';
+        } else {
+          // No token, clear authentication state
+          state.user = null;
+          state.accessToken = null;
+          state.refreshToken = null;
+          state.error = action.payload?.message || 'Failed to fetch user info';
+        }
       })
 
       // ======================================================================

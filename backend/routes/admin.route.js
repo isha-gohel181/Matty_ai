@@ -15,6 +15,7 @@ const router = express.Router()
 
 
 // *all access
+router.route("/users").get(verifyJWT, customRoles("admin"), getAllUsers)
 router.route("/get/user/all").get(verifyJWT, customRoles("admin"), getAllUsers)
 router.route("/get/user/:id").get(verifyJWT, customRoles("admin"), getOneUser)
     .put(verifyJWT, customRoles("admin"), adminUpdateUserProfile)

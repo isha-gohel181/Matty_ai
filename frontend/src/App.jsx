@@ -33,11 +33,15 @@ const DashboardFiles = lazy(() => import("./pages/DashboardPages/DashboardFile")
 const EditorPage = lazy(() => import("./pages/DashboardPages/EditorPage"));
 const AnalyticsPage = lazy(() => import("./pages/DashboardPages/AnalyticsPage"));
 
+// Payment Page
+const PaymentPage = lazy(() => import("./pages/DashboardPages/PaymentPage"));
+
 // Admin Pages
 const AdminDashboard = lazy(() => import("./pages/DashboardPages/AdminDashboard"));
 const AdminUsers = lazy(() => import("./pages/DashboardPages/AdminUsers"));
 const AdminModeration = lazy(() => import("./pages/DashboardPages/AdminModeration"));
 const AdminTemplates = lazy(() => import("./pages/DashboardPages/AdminTemplates"));
+const AdminPayments = lazy(() => import("./pages/DashboardPages/AdminPayments"));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -45,9 +49,16 @@ const App = () => {
   const [isAppLoading, setIsAppLoading] = useState(true);
 
   useEffect(() => {
-    // On refresh, do not check authentication, redirect to home
-    setIsAppLoading(false);
-  }, []);
+    // Check if user is already logged in
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      dispatch(getLoggedInUserInfo()).finally(() => {
+        setIsAppLoading(false);
+      });
+    } else {
+      setIsAppLoading(false);
+    }
+  }, [dispatch]);
 
   const FullPageLoader = () => (
     <div className="flex items-center justify-center h-screen bg-background">
@@ -69,7 +80,7 @@ const App = () => {
             element={<Home />}
           />
         </Route>
-
+      
         {/* Authentication Routes */}
         <Route element={<AuthPageLayout />}>
           <Route
@@ -100,10 +111,12 @@ const App = () => {
           <Route path="activity" element={<DashboardActivity />} />
           <Route path="templates" element={<TemplatesPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="payment" element={<PaymentPage />} />
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="admin/users" element={<AdminUsers />} />
           <Route path="admin/moderation" element={<AdminModeration />} />
           <Route path="admin/templates" element={<AdminTemplates />} />
+          <Route path="admin/payments" element={<AdminPayments />} />
           {/* Add other dashboard routes here */}
         </Route>
 

@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera } from "lucide-react";
 import CustomAlert from "@/components/CustomAlert/CustomAlert";
+import { toast } from "sonner";
 
 // Zod schemas for validation
 const profileSchema = z.object({
@@ -33,6 +34,10 @@ const profileSchema = z.object({
 const passwordSchema = z.object({
   currentPassword: z.string().min(8, "Password must be at least 8 characters"),
   newPassword: z.string().min(8, "New password must be at least 8 characters"),
+  confirmPassword: z.string().min(8, "Confirm password must be at least 8 characters"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 const DashboardProfile = () => {
@@ -76,15 +81,18 @@ const DashboardProfile = () => {
 
   // Handlers for form submissions and avatar change
   const onProfileSubmit = (data) => {
-    // We don't submit the email as it's read-only
-    const { email, ...updateData } = data;
-    dispatch(updateUserProfile(updateData));
+    dispatch(updateUserProfile(data)).then((result) => {
+      if (updateUserProfile.fulfilled.match(result)) {
+        toast.success("Profile updated successfully!");
+      }
+    });
   };
 
   const onPasswordSubmit = (data) => {
     dispatch(changeCurrentPassword(data)).then((result) => {
       if (changeCurrentPassword.fulfilled.match(result)) {
         resetPasswordForm();
+        toast.success("Password updated successfully!");
       }
     });
   };
@@ -189,6 +197,11 @@ const DashboardProfile = () => {
                       <Label htmlFor="newPassword">New Password</Label>
                       <Input id="newPassword" type="password" {...registerPassword("newPassword")} />
                       {passwordErrors.newPassword && <p className="text-sm text-destructive">{passwordErrors.newPassword.message}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                      <Input id="confirmPassword" type="password" {...registerPassword("confirmPassword")} />
+                      {passwordErrors.confirmPassword && <p className="text-sm text-destructive">{passwordErrors.confirmPassword.message}</p>}
                     </div>
                     <Button type="submit" disabled={passwordLoading}>
                       {passwordLoading ? "Updating..." : "Update Password"}
