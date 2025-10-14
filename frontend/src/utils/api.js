@@ -3,6 +3,7 @@ import axios from 'axios';
 // Create axios instance with base configuration
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+  withCredentials: true, // 👈 Critical for cross-origin auth
   headers: {
     'Content-Type': 'application/json',
   },
@@ -38,7 +39,8 @@ api.interceptors.response.use(
         // Try to refresh token
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
-          const response = await axios.post('/api/v1/users/refresh-token', {
+          // 👇 Use the 'api' instance to ensure the correct baseURL is used
+          const response = await api.post('/users/refresh-token', {
             refreshToken
           });
 
@@ -46,6 +48,7 @@ api.interceptors.response.use(
           localStorage.setItem('accessToken', accessToken);
 
           // Retry the original request with new token
+          api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return api(originalRequest);
         }
@@ -54,6 +57,7 @@ api.interceptors.response.use(
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         window.location.href = '/login';
+        return Promise.reject(refreshError);
       }
     }
 
