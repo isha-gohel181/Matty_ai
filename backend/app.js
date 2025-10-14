@@ -45,7 +45,8 @@ app.use(
   //   },
   //   credentials: true,
   // })
- cors: { origin: process.env.CORS_ORIGIN,  // ✅ Allow frontend to connect credentials: true }
+ cors: { origin: process.env.CORS_ORIGIN,
+  credentials: true}// ✅ Allow frontend to connect credentials: true }
 );
 
 app.use("/api/v1/users", userRouter);
