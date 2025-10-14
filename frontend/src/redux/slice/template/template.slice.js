@@ -15,7 +15,6 @@ export const getTemplates = createAsyncThunk(
     }
   }
 );
-
 // Add this new thunk to fetch a single template
 export const getTemplateById = createAsyncThunk(
   "template/getTemplateById",

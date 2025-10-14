@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,7 @@ const loginSchema = z.object({
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const isLoading = useSelector(selectAuthLoading);
   const error = useSelector(selectError);
 
@@ -41,7 +42,9 @@ const Login = () => {
   const onSubmit = (data) => {
     dispatch(loginUser(data)).then((result) => {
       if (loginUser.fulfilled.match(result)) {
-        navigate('/dashboard/editor');
+        // Check if there's a redirect path in location state
+        const redirectTo = location.state?.redirectTo || '/dashboard/editor';
+        navigate(redirectTo);
       }
     });
   };

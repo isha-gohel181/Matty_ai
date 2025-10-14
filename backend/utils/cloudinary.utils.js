@@ -71,7 +71,6 @@ const uploadOnCloudinary = async (localFilePath, refer = "", user = null, origin
     }
 }
 
-
 const destroyOnCloudinary = async (imageId, refer = "") => {
     console.log(process.env.CLOUDINARY_CLOUD_NAME); // should print your Cloudinary cloud name
     console.log(process.env.CLOUDINARY_API_KEY);    // should print your Cloudinary API key
@@ -86,9 +85,6 @@ const destroyOnCloudinary = async (imageId, refer = "") => {
             // resource_type: "image"
             folder: refer === cloudinaryAvatarRefer ? "GNCIPL/avatars" : "GNCIPL/files",
             resource_type: refer === cloudinaryAvatarRefer || refer === cloudinaryImageRefer ? "image" : "raw",
-
-
-
         });
 
         //file has been uploaded successfully

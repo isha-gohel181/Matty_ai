@@ -8,6 +8,7 @@ import {
 } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Save,
   Trash2,
@@ -15,6 +16,9 @@ import {
   FileText,
   Upload,
   Sparkles,
+  Palette,
+  Bot,
+  ChevronDown,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,11 +30,17 @@ import {
 import { getTemplateById, clearCurrentTemplate } from "@/redux/slice/template/template.slice";
 import { uploadImage } from "@/redux/slice/image/image.slice";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import imageCompression from "browser-image-compression";
 import { exportToPdf } from "@/lib/export";
 import { useTheme } from "@/context/ThemeContext.jsx";
 import AiSuggestions from "./AiSuggestions";
+import ColorPalette from "./ColorPalette";
 
 const Editor = () => {
   const { id } = useParams();
@@ -55,6 +65,7 @@ const Editor = () => {
   const [key, setKey] = useState(0);
   const [autoSave, setAutoSave] = useState(false);
   const [showAiSuggestions, setShowAiSuggestions] = useState(false);
+  const [showColorPalette, setShowColorPalette] = useState(false);
 
   useEffect(() => {
     if (id) dispatch(getDesignById(id));
@@ -200,7 +211,7 @@ const Editor = () => {
 
         <div className="flex-grow" />
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <input
             type="checkbox"
             id="autoSave"
@@ -208,7 +219,7 @@ const Editor = () => {
             onChange={(e) => setAutoSave(e.target.checked)}
           />
           <label htmlFor="autoSave" className="text-sm">Auto-Save</label>
-        </div>
+        </div> */}
 
         <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" style={{ display: "none" }} />
 
@@ -217,14 +228,51 @@ const Editor = () => {
           {imageLoading ? "Uploading..." : "Upload Image"}
         </Button>
 
-        <Button 
-          size="sm" 
-          variant={showAiSuggestions ? "default" : "outline"} 
-          onClick={() => setShowAiSuggestions(!showAiSuggestions)}
-        >
-          <Sparkles className="mr-2 h-4 w-4" />
-          AI Suggestions
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              size="sm" 
+              variant={(showAiSuggestions || showColorPalette) ? "default" : "outline"}
+              className="flex items-center gap-2"
+            >
+              <Bot className="h-4 w-4" />
+              AI Tools
+              <ChevronDown className="h-3 w-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem 
+              onClick={() => {
+                if (!showAiSuggestions) {
+                  setShowAiSuggestions(true);
+                  setShowColorPalette(false);
+                } else {
+                  setShowAiSuggestions(false);
+                }
+              }}
+              className="flex items-center gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              AI Suggestions
+              {showAiSuggestions && <span className="ml-auto text-xs text-muted-foreground">Active</span>}
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => {
+                if (!showColorPalette) {
+                  setShowColorPalette(true);
+                  setShowAiSuggestions(false);
+                } else {
+                  setShowColorPalette(false);
+                }
+              }}
+              className="flex items-center gap-2"
+            >
+              <Palette className="h-4 w-4" />
+              Color Palette
+              {showColorPalette && <span className="ml-auto text-xs text-muted-foreground">Active</span>}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <Button size="sm" onClick={() => handleExport("png")}>
           <Download className="mr-2 h-4 w-4" /> PNG
@@ -270,6 +318,7 @@ const Editor = () => {
           </WelcomeScreen>
         </Excalidraw>
         {showAiSuggestions && <AiSuggestions />}
+        {showColorPalette && <ColorPalette />}
       </div>
     </div>
   );

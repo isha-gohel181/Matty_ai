@@ -5,6 +5,7 @@ import {
   uploadOnCloudinary,
 } from "../utils/cloudinary.utils.js";
 import { cloudinaryImageRefer } from "../utils/constants.utils.js";
+import { User } from "../models/user.model.js";
 
 // @desc    Create a new template
 // @route   POST /api/v1/templates/create
@@ -67,11 +68,35 @@ export const getTemplates = asyncHandler(async (req, res, next) => {
     query.tags = { $in: tagArray };
   }
 
-  const templates = await Template.find(query).sort({ createdAt: -1 });
+  // Check if user is authenticated and premium
+  let isPremium = false;
+  if (req.user) {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      // Check if subscription is still active
+      const now = new Date();
+      if (user.subscriptionEndDate && user.subscriptionEndDate < now) {
+        user.isPremium = false;
+        await user.save();
+      }
+      isPremium = user.isPremium;
+    }
+  }
+
+  let templates;
+  if (isPremium) {
+    // Premium users get all templates
+    templates = await Template.find(query).sort({ createdAt: -1 });
+  } else {
+    // Free users get only first 10 templates
+    templates = await Template.find(query).sort({ createdAt: -1 }).limit(10);
+  }
 
   res.status(200).json({
     success: true,
     templates,
+    isPremium,
+    limited: !isPremium
   });
 });
 

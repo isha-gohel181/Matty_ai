@@ -7,7 +7,7 @@ const cookieToken = async (user, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === 'production', // Only secure in production
         maxAge: 3 * 24 * 60 * 60 * 1000,  // 7 days in milliseconds
         sameSite: "Strict"
     }
@@ -17,8 +17,18 @@ const cookieToken = async (user, res) => {
         .cookie("refreshToken", refreshToken, options)
         .json({
             success: true,
-            message: `User created`,
-            user, accessToken, refreshToken
+            message: `User logged in successfully`,
+            user: {
+                _id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
+                avatar: user.avatar,
+                isVerified: user.isVerified
+            },
+            accessToken,
+            refreshToken
         })
 }
 

@@ -111,6 +111,29 @@ const userSchema = new Schema({
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,
 
+    // Payment and subscription fields
+    isPremium: {
+        type: Boolean,
+        default: false
+    },
+    subscriptionPlan: {
+        type: String,
+        enum: ["monthly", "yearly"],
+        default: null
+    },
+    subscriptionEndDate: {
+        type: Date,
+        default: null
+    },
+
+    // Usage tracking for free tier limits
+    usageLimits: {
+        month: { type: Number, default: new Date().getMonth() },
+        year: { type: Number, default: new Date().getFullYear() },
+        aiSuggestions: { type: Number, default: 0 },
+        colorPalettes: { type: Number, default: 0 }
+    },
+
 },
     {
         timestamps: true,

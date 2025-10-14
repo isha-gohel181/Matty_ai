@@ -249,7 +249,7 @@ const AdminModeration = () => {
                             </span>
                           </div>
 
-                          <p className="text-gray-900 text-sm">
+                          <p className="text-white-900 text-sm">
                             {activity.description || `${activity.action} action performed`}
                           </p>
 
