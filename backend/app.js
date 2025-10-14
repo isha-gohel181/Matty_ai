@@ -33,18 +33,19 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
-const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+// const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
+  // cors({
+  //   origin: (origin, callback) => {
+  //     if (!origin || allowedOrigins.includes(origin)) {
+  //       callback(null, true);
+  //     } else {
+  //       callback(new Error("Not allowed by CORS"));
+  //     }
+  //   },
+  //   credentials: true,
+  // })
+ cors: { origin: process.env.CORS_ORIGIN,  // ✅ Allow frontend to connect credentials: true }
 );
 
 app.use("/api/v1/users", userRouter);
