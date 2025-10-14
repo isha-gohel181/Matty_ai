@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../utils/api.js'; 
 
 // ============================================================================
 // Async Thunks
@@ -9,7 +10,7 @@ export const registerUser = createAsyncThunk(
   'user/register',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/register', {
+      const response = await api.post('/api/v1/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
