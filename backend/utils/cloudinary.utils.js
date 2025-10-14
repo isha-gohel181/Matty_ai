@@ -3,11 +3,10 @@ import dotenv from "dotenv";
 
 import fs from "fs";
 import path from "path";
-import { cloudinaryAvatarRefer } from "./constants.utils.js";
+import { cloudinaryAvatarRefer, cloudinaryImageRefer, cloudinaryFileRefer } from "./constants.utils.js";
 
 // Load environment variables
 dotenv.config();
-
 
 
 // Configuration
@@ -51,7 +50,7 @@ const uploadOnCloudinary = async (localFilePath, refer = "", user = null, origin
         const response = await cloudinary.uploader.upload(localFilePath, {
             // folder: refer === "user" ? "greedUsers" : "greedProducts",
             folder: refer === cloudinaryAvatarRefer ? "GNCIPL/avatars" : "GNCIPL/files",
-            resource_type: refer === cloudinaryAvatarRefer ? "image" : "raw",
+            resource_type: refer === cloudinaryAvatarRefer || refer === cloudinaryImageRefer ? "image" : "raw",
             public_id: publicId,    // ✅ custom name
             use_filename: true,     // ✅ keep original filename if no user provided
             unique_filename: false, // ✅ don’t add random hash
@@ -69,8 +68,6 @@ const uploadOnCloudinary = async (localFilePath, refer = "", user = null, origin
         console.error("Cloudinary upload failed:", error);
         fs.unlinkSync(localFilePath);
         return null;
-    } finally {
-        fs.unlinkSync(localFilePath);
     }
 }
 
@@ -88,7 +85,7 @@ const destroyOnCloudinary = async (imageId, refer = "") => {
             // folder: refer === "user" ? "greedUsers" : "greedProducts",
             // resource_type: "image"
             folder: refer === cloudinaryAvatarRefer ? "GNCIPL/avatars" : "GNCIPL/files",
-            resource_type: refer === cloudinaryAvatarRefer ? "image" : "raw",
+            resource_type: refer === cloudinaryAvatarRefer || refer === cloudinaryImageRefer ? "image" : "raw",
 
 
 

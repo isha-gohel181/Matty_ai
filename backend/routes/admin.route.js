@@ -7,7 +7,8 @@ import {
     getOneUser,
     adminUpdateUserProfile,
     adminUpdateUserAvatar,
-    adminDeleteUser
+    adminDeleteUser,
+    getAdminStats
 } from "../controllers/admin.controller.js";
 
 const router = express.Router()
@@ -21,6 +22,8 @@ router.route("/get/user/:id").get(verifyJWT, customRoles("admin"), getOneUser)
 
 
 router.route("/edit/user/avatar/:id").put(verifyJWT, customRoles("admin"), upload.single("avatar"), adminUpdateUserAvatar)
+
+router.route("/stats").get(verifyJWT, customRoles("admin"), getAdminStats)
 
 
 export default router;

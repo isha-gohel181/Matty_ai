@@ -1,147 +1,116 @@
-// src/components/layout/Header.jsx
-import React, { useState } from "react";
-import { useTheme } from "../../context/ThemeContext";
+import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import ThemeToogleButton from "../Buttons/ThemeToogleButton";
+import { Button } from "@/components/ui/button";
+import { Menu, Sun, Moon } from "lucide-react";
+import { useState } from "react";
+import { useTheme } from "@/context/ThemeContext.jsx";
 
 const Header = () => {
-  const { theme, setTheme } = useTheme();
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
+  const navLinks = [
+    { name: "Features", href: "#features" },
+    { name: "Templates", href: "#" },
+  ];
+
   return (
-    <header
-      className={`relative backdrop-blur-sm border-b transition-all duration-300 ${
-        theme === "light"
-          ? "bg-white/95 text-gray-800 border-gray-200 shadow-lg shadow-green-100/50"
-          : "bg-gray-900/95 text-white border-gray-700 shadow-lg shadow-green-500/10"
-      }`}
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="fixed top-0 left-0 right-0 z-50"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 sm:h-20">
-          {/* Logo / Title */}
-          <div className="flex items-center group cursor-pointer">
-            <div className="relative">
-              <div
-                onClick={() => navigate("/")}
-                className={`text-2xl sm:text-3xl font-extrabold tracking-tight transition-all duration-300 group-hover:scale-105 ${
-                  theme === "light" ? "text-gray-900" : "text-white"
-                }`}
-              >
-                Matty
-                <span className="bg-gradient-to-r from-green-500 via-green-600 to-emerald-500 bg-clip-text text-transparent">
-                  AI
-                </span>
-              </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm -z-10"></div>
-            </div>
-            <div
-              className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${
-                theme === "light"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-green-900/50 text-green-300"
-              }`}
-            >
-              Platform
-            </div>
-          </div>
-          <ThemeToogleButton theme={theme} setTheme={setTheme} />
+      <div className="mx-auto max-w-screen-xl px-4 py-3">
+        <div className="flex items-center justify-between rounded-full bg-card/80 backdrop-blur-xl border border-border p-3 px-6 shadow-lg">
+          
+          {/* Logo */}
+          <Link to="/" className="text-2xl font-bold text-foreground tracking-wide">
+            Matty
+          </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {["About", "Contact"].map((item) => (
-              <Link
-                key={item}
-                to={`${item.toLowerCase()}`}
-                className={`relative text-base font-semibold transition-all duration-300 group ${
-                  theme === "light"
-                    ? "text-gray-700 hover:text-green-600"
-                    : "text-gray-300 hover:text-green-400"
-                }`}
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link, idx) => (
+              <a
+                key={idx}
+                href={link.href}
+                className="text-foreground/80 hover:text-foreground transition-colors font-medium"
               >
-                {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-green-500 to-emerald-500 group-hover:w-full transition-all duration-300"></span>
-              </Link>
+                {link.name}
+              </a>
             ))}
-          </nav>
+          </div>
 
-          {/* Theme Toggle and Mobile Menu Button */}
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle Button */}
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={toggleMobileMenu}
-              className={`md:hidden p-2 rounded-lg transition-all duration-300 ${
-                theme === "light"
-                  ? "text-gray-700 hover:bg-gray-100"
-                  : "text-gray-300 hover:bg-gray-800"
-              }`}
+          {/* Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            <Button
+              onClick={toggleTheme}
+              variant="ghost"
+              size="sm"
+              className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition"
             >
-              <div className="w-6 h-6 flex flex-col justify-center space-y-1">
-                <span
-                  className={`block h-0.5 w-6 transition-all duration-300 ${
-                    theme === "light" ? "bg-gray-800" : "bg-white"
-                  } ${isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""}`}
-                ></span>
-                <span
-                  className={`block h-0.5 w-6 transition-all duration-300 ${
-                    theme === "light" ? "bg-gray-800" : "bg-white"
-                  } ${isMobileMenuOpen ? "opacity-0" : ""}`}
-                ></span>
-                <span
-                  className={`block h-0.5 w-6 transition-all duration-300 ${
-                    theme === "light" ? "bg-gray-800" : "bg-white"
-                  } ${isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
-                ></span>
-              </div>
-            </button>
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
+            <Button
+              onClick={() => navigate('/login')}
+              variant="ghost"
+              className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition"
+            >
+              Log In
+            </Button>
+
+            <Button
+              onClick={() => navigate('/signup')}
+              className="rounded-full bg-gradient-to-r from-purple-500 to-teal-500 text-white px-5 hover:opacity-90 transition"
+            >
+              Sign Up
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <Menu
+              className="text-foreground w-6 h-6 cursor-pointer"
+              onClick={() => setOpen(!open)}
+            />
           </div>
         </div>
-      </div>
 
-      {/* Mobile Navigation Menu */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div
-          className={`px-4 py-6 space-y-4 border-t ${
-            theme === "light"
-              ? "bg-white border-gray-200 shadow-lg"
-              : "bg-gray-900 border-gray-700 shadow-lg"
-          }`}
-        >
-          {["About", "Contact"].map((item, index) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`block text-lg font-semibold transition-all duration-300 transform hover:translate-x-2 ${
-                theme === "light"
-                  ? "text-gray-700 hover:text-green-600"
-                  : "text-gray-300 hover:text-green-400"
-              }`}
-              style={{ animationDelay: `${index * 100}ms` }}
+        {/* Mobile Menu */}
+        {open && (
+          <div className="md:hidden mt-2 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-4 flex flex-col gap-4 shadow-lg">
+            {navLinks.map((link, idx) => (
+              <a
+                key={idx}
+                href={link.href}
+                className="text-foreground/80 hover:text-foreground transition-colors font-medium"
+                onClick={() => setOpen(false)}
+              >
+                {link.name}
+              </a>
+            ))}
+            <Link
+              to="/login"
+              className="text-foreground/80 hover:text-foreground transition font-medium"
             >
-              <div className="flex items-center space-x-3">
-                <span
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    theme === "light" ? "bg-green-500" : "bg-green-400"
-                  }`}
-                ></span>
-                <span>{item}</span>
-              </div>
-            </a>
-          ))}
-        </div>
+              Log In
+            </Link>
+            <Link
+              to="/signup"
+              className="bg-gradient-to-r from-purple-500 to-teal-500 text-white text-center rounded-full py-2 font-medium hover:opacity-90 transition"
+            >
+              Sign Up
+            </Link>
+          </div>
+        )}
       </div>
-    </header>
+    </motion.nav>
   );
 };
 

@@ -1,9 +1,25 @@
-import React from 'react'
+import React from 'react';
+
+import HeroSection from "@/components/Home/HeroSection";
+import FeaturesSection from "@/components/Home/FeaturesSection";
+import HowItWorksSection from "@/components/Home/HowItWorksSection";
+import TemplatesSection from "@/components/Home/TemplatesSection";
+import TestimonialsSection from "@/components/Home/TestimonialsSection";
+import CallToAction from "@/components/Home/CallToAction";
 
 const Home = () => {
   return (
-    <div>Home</div>
-  )
-}
+    <div className="bg-background text-foreground">
+        <main>
+            <HeroSection />
+            <FeaturesSection />
+            <HowItWorksSection />
+            <TemplatesSection />
+            <TestimonialsSection />
+            <CallToAction />
+        </main>
+    </div>
+  );
+};
 
-export default Home
+export default Home;

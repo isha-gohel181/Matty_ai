@@ -9,7 +9,7 @@ export const getAllUsers = createAsyncThunk(
   'admin/getAllUsers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/admin/users', {
+      const response = await fetch('/api/v1/admin/get/user/all', {
         credentials: 'include',
       });
 
@@ -31,7 +31,7 @@ export const getOneUser = createAsyncThunk(
   'admin/getOneUser',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/admin/users/${userId}`, {
+      const response = await fetch(`/api/v1/admin/get/user/${userId}`, {
         credentials: 'include',
       });
 
@@ -53,8 +53,8 @@ export const adminUpdateUserProfile = createAsyncThunk(
   'admin/updateUserProfile',
   async ({ userId, profileData }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/admin/users/${userId}/profile`, {
-        method: 'PATCH',
+      const response = await fetch(`/api/v1/admin/get/user/${userId}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -83,8 +83,8 @@ export const adminUpdateUserAvatar = createAsyncThunk(
       const formData = new FormData();
       formData.append('avatar', avatarFile);
 
-      const response = await fetch(`/api/v1/admin/users/${userId}/avatar`, {
-        method: 'PATCH',
+      const response = await fetch(`/api/v1/admin/edit/user/avatar/${userId}`, {
+        method: 'PUT',
         credentials: 'include',
         body: formData,
       });
@@ -107,7 +107,7 @@ export const adminDeleteUser = createAsyncThunk(
   'admin/deleteUser',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/admin/users/${userId}`, {
+      const response = await fetch(`/api/v1/admin/get/user/${userId}`, {
         method: 'DELETE',
         credentials: 'include',
       });

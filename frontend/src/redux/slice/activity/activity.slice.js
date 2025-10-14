@@ -9,7 +9,7 @@ export const getMyActivityLogs = createAsyncThunk(
   'activityLog/getMyActivityLogs',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/activity-logs/me', {
+      const response = await fetch('/api/v1/activity/my', {
         credentials: 'include',
       });
 
@@ -40,8 +40,8 @@ export const getAllActivityLogs = createAsyncThunk(
 
       const queryString = queryParams.toString();
       const url = queryString 
-        ? `/api/v1/admin/activity-logs?${queryString}`
-        : '/api/v1/admin/activity-logs';
+        ? `/api/v1/activity/all?${queryString}`
+        : '/api/v1/activity/all';
 
       const response = await fetch(url, {
         credentials: 'include',
@@ -65,7 +65,7 @@ export const clearUserLogs = createAsyncThunk(
   'activityLog/clearUserLogs',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/admin/activity-logs/${userId}`, {
+      const response = await fetch(`/api/v1/activity/clear/${userId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
