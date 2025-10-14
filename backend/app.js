@@ -51,7 +51,6 @@ cors({
   // methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 }));
 
-);
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/activity", activityRouter);
