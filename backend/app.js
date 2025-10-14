@@ -34,21 +34,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // const allowedOrigins = process.env.CORS_ORIGIN.split(",");
-app.use(
-  // cors({
-  //   origin: (origin, callback) => {
-  //     if (!origin || allowedOrigins.includes(origin)) {
-  //       callback(null, true);
-  //     } else {
-  //       callback(new Error("Not allowed by CORS"));
-  //     }
-  //   },
-  //   credentials: true,
-  // })
-cors({
-  origin: process.env.CORS_ORIGIN || "https://matty-ai-draw.vercel.app",
-  credentials: true,
-  // methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+
+
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin ||allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },  
+    credentials: true
 }));
 
 
