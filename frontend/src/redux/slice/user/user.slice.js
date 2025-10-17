@@ -261,9 +261,9 @@ const userSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.authLoading = false;
-        state.user = action.payload.data.user;
-        state.accessToken = action.payload.data.accessToken;
-        state.refreshToken = action.payload.data.refreshToken;
+        state.user = action.payload.user;
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
         state.isRegistered = true;
         state.success = true;
         state.message = action.payload.message || 'Registration successful!';
@@ -285,17 +285,17 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.authLoading = false;
-        state.user = action.payload.data.user;
-        state.accessToken = action.payload.data.accessToken;
-        state.refreshToken = action.payload.data.refreshToken;
+        state.user = action.payload.user;
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
         state.success = true;
         state.message = action.payload.message || 'Login successful!';
         // Store tokens in localStorage
-        if (action.payload.data.accessToken) {
-          localStorage.setItem('accessToken', action.payload.data.accessToken);
+        if (action.payload.accessToken) {
+          localStorage.setItem('accessToken', action.payload.accessToken);
         }
-        if (action.payload.data.refreshToken) {
-          localStorage.setItem('refreshToken', action.payload.data.refreshToken);
+        if (action.payload.refreshToken) {
+          localStorage.setItem('refreshToken', action.payload.refreshToken);
         }
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -340,8 +340,8 @@ const userSlice = createSlice({
       })
       .addCase(refreshAccessToken.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessToken = action.payload.data.accessToken;
-        state.refreshToken = action.payload.data.refreshToken;
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
         state.success = true;
       })
       .addCase(refreshAccessToken.rejected, (state, action) => {
@@ -360,7 +360,7 @@ const userSlice = createSlice({
       })
       .addCase(getLoggedInUserInfo.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.data.user;
+        state.user = action.payload.user;
         // Set accessToken from localStorage if available
         const token = localStorage.getItem('accessToken');
         if (token) {
@@ -414,7 +414,7 @@ const userSlice = createSlice({
       })
       .addCase(verifyOtpForUser.fulfilled, (state, action) => {
         state.otpLoading = false;
-        state.user = action.payload.data.user;
+        state.user = action.payload.user;
         state.isVerified = true;
         state.success = true;
         state.message = action.payload.message || 'Email verified successfully!';
@@ -492,7 +492,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.profileLoading = false;
-        state.user = action.payload.data.user;
+        state.user = action.payload.user;
         state.success = true;
         state.message = action.payload.message || 'Profile updated successfully!';
       })
@@ -511,7 +511,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUserAvatar.fulfilled, (state, action) => {
         state.avatarLoading = false;
-        state.user = action.payload.data.user;
+        state.user = action.payload.user;
         state.success = true;
         state.message = action.payload.message || 'Avatar updated successfully!';
       })
