@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../../utils/api.js';
 
 // ============================================================================
 // Async Thunks
@@ -9,17 +10,8 @@ export const getAllUsers = createAsyncThunk(
   'admin/getAllUsers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/admin/get/user/all', {
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.get('/api/v1/admin/get/user/all');
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -31,17 +23,8 @@ export const getOneUser = createAsyncThunk(
   'admin/getOneUser',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/admin/get/user/${userId}`, {
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.get(`/api/v1/admin/get/user/${userId}`);
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -53,22 +36,8 @@ export const adminUpdateUserProfile = createAsyncThunk(
   'admin/updateUserProfile',
   async ({ userId, profileData }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/admin/get/user/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(profileData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.put(`/api/v1/admin/get/user/${userId}`, profileData);
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -83,19 +52,12 @@ export const adminUpdateUserAvatar = createAsyncThunk(
       const formData = new FormData();
       formData.append('avatar', avatarFile);
 
-      const response = await fetch(`/api/v1/admin/edit/user/avatar/${userId}`, {
-        method: 'PUT',
-        credentials: 'include',
-        body: formData,
+      const response = await api.put(`/api/v1/admin/edit/user/avatar/${userId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -107,18 +69,8 @@ export const adminDeleteUser = createAsyncThunk(
   'admin/deleteUser',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/admin/get/user/${userId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return { ...data, deletedUserId: userId };
+      const response = await api.delete(`/api/v1/admin/get/user/${userId}`);
+      return { ...response.data, deletedUserId: userId };
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -130,22 +82,8 @@ export const adminChangeUserRole = createAsyncThunk(
   'admin/changeUserRole',
   async ({ userId, role }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/admin/users/${userId}/role`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ role }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.patch(`/api/v1/admin/users/${userId}/role`, { role });
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -157,17 +95,8 @@ export const adminGetStats = createAsyncThunk(
   'admin/getStats',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/admin/stats', {
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.get('/api/v1/admin/stats');
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }

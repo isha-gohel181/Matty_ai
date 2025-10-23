@@ -1,32 +1,28 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from '../../../utils/api.js';
 
 export const getTemplates = createAsyncThunk(
   "template/getTemplates",
   async (filters = {}, { rejectWithValue }) => {
     try {
-      const queryParams = new URLSearchParams(filters).toString();
-      const url = queryParams ? `/api/v1/templates?${queryParams}` : "/api/v1/templates";
-      const response = await fetch(url);
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data.templates;
+      const response = await api.get("/api/v1/templates", { params: filters });
+      return response.data.templates;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
+
 // Add this new thunk to fetch a single template
 export const getTemplateById = createAsyncThunk(
   "template/getTemplateById",
   async (id, { rejectWithValue }) => {
     try {
       // Note: No credentials needed if it's a public route
-      const response = await fetch(`/api/v1/templates/${id}`);
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data.template;
+      const response = await api.get(`/api/v1/templates/${id}`);
+      return response.data.template;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -47,17 +43,15 @@ export const createTemplate = createAsyncThunk(
         formData.append('thumbnail', templateData.thumbnail);
       }
 
-      const response = await fetch('/api/v1/templates/create', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
+      const response = await api.post('/api/v1/templates/create', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data.template;
+      return response.data.template;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );

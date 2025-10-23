@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { apiHelpers } from '../../../utils/apiHelpers.js';
 
 // ============================================================================
 // Async Thunks
@@ -8,24 +9,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 export const registerUser = createAsyncThunk(
   'user/register',
   async (userData, { rejectWithValue }) => {
-    try {
-      const response = await fetch('/api/v1/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || { message: error.message });
+    const result = await apiHelpers.post('/api/v1/users/register', userData);
+    
+    if (result.success) {
+      return result.data;
+    } else {
+      return rejectWithValue(result.error);
     }
   }
 );
@@ -34,24 +23,12 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   'user/login',
   async (credentials, { rejectWithValue }) => {
-    try {
-      const response = await fetch('/api/v1/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || { message: error.message });
+    const result = await apiHelpers.post('/api/v1/users/login', credentials);
+    
+    if (result.success) {
+      return result.data;
+    } else {
+      return rejectWithValue(result.error);
     }
   }
 );
@@ -61,18 +38,8 @@ export const logoutUser = createAsyncThunk(
   'user/logout',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.post('/api/v1/users/logout');
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -106,24 +73,12 @@ export const refreshAccessToken = createAsyncThunk(
 export const getLoggedInUserInfo = createAsyncThunk(
   'user/getUserInfo',
   async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch('/api/v1/users/dashboard', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || { message: error.message });
+    const result = await apiHelpers.get('/api/v1/users/dashboard');
+    
+    if (result.success) {
+      return result.data;
+    } else {
+      return rejectWithValue(result.error);
     }
   }
 );
@@ -133,18 +88,8 @@ export const sendOtpToUser = createAsyncThunk(
   'user/sendOtp',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/otp/send', {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.post('/api/v1/users/otp/send');
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -156,22 +101,8 @@ export const verifyOtpForUser = createAsyncThunk(
   'user/verifyOtp',
   async (otpData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/otp/verify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(otpData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.post('/api/v1/users/otp/verify', otpData);
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -183,21 +114,8 @@ export const sendResetPasswordLinkToUser = createAsyncThunk(
   'user/sendResetLink',
   async (email, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/password/reset', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.post('/api/v1/users/password/reset', { email });
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -235,22 +153,8 @@ export const changeCurrentPassword = createAsyncThunk(
   'user/changePassword',
   async (passwordData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/password/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(passwordData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.post('/api/v1/users/password/update', passwordData);
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -262,22 +166,8 @@ export const updateUserProfile = createAsyncThunk(
   'user/updateProfile',
   async (profileData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/profile/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(profileData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.post('/api/v1/users/profile/update', profileData);
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -292,19 +182,13 @@ export const updateUserAvatar = createAsyncThunk(
       const formData = new FormData();
       formData.append('avatar', avatarFile);
 
-      const response = await fetch('/api/v1/users/profile/avatar/update', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
+      const response = await api.post('/api/v1/users/profile/avatar/update', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -316,18 +200,8 @@ export const deleteUser = createAsyncThunk(
   'user/deleteUser',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/profile/delete', {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.delete('/api/v1/users/profile/delete');
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -720,6 +594,8 @@ export const selectRefreshToken = (state) => state.user.refreshToken;
 export const selectIsAuthenticated = (state) => !!state.user.accessToken;
 export const selectIsVerified = (state) => state.user.isVerified;
 export const selectIsRegistered = (state) => state.user.isRegistered;
+export const selectIsAdmin = (state) => state.user.user?.role === 'admin';
+export const selectUserRole = (state) => state.user.user?.role;
 
 // Loading Selectors
 export const selectLoading = (state) => state.user.loading;

@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../../utils/api.js';
 
 // ============================================================================
 // Async Thunks
@@ -9,17 +10,8 @@ export const getMyActivityLogs = createAsyncThunk(
   'activityLog/getMyActivityLogs',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/activity/my', {
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.get('/api/v1/activity/my');
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -31,29 +23,8 @@ export const getAllActivityLogs = createAsyncThunk(
   'activityLog/getAllActivityLogs',
   async (filters = {}, { rejectWithValue }) => {
     try {
-      // Build query string from filters
-      const queryParams = new URLSearchParams();
-      if (filters.userId) queryParams.append('userId', filters.userId);
-      if (filters.action) queryParams.append('action', filters.action);
-      if (filters.limit) queryParams.append('limit', filters.limit);
-      if (filters.page) queryParams.append('page', filters.page);
-
-      const queryString = queryParams.toString();
-      const url = queryString 
-        ? `/api/v1/activity/all?${queryString}`
-        : '/api/v1/activity/all';
-
-      const response = await fetch(url, {
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.get('/api/v1/activity/all', { params: filters });
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -65,18 +36,8 @@ export const clearUserLogs = createAsyncThunk(
   'activityLog/clearUserLogs',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/activity/clear/${userId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return { ...data, clearedUserId: userId };
+      const response = await api.delete(`/api/v1/activity/clear/${userId}`);
+      return { ...response.data, clearedUserId: userId };
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }

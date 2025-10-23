@@ -1,25 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../../utils/api.js';
 
 export const getDesignSuggestions = createAsyncThunk(
   'ai/getDesignSuggestions',
   async (prompt, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/ai/suggestions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ prompt }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data.suggestions;
+      const response = await api.post('/api/v1/ai/suggestions', { prompt });
+      return response.data.suggestions;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -33,19 +20,13 @@ export const generateColorPalette = createAsyncThunk(
       const formData = new FormData();
       formData.append('image', imageFile);
 
-      const response = await fetch('/api/v1/ai/palette', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
+      const response = await api.post('/api/v1/ai/palette', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data.palette;
+      return response.data.palette;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }

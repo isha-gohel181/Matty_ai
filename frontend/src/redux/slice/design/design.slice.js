@@ -1,20 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from '../../../utils/api.js';
 
 // Async Thunks
 export const createDesign = createAsyncThunk(
   "design/create",
   async (designData, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/v1/designs", {
-        method: "POST",
-        credentials: "include",
-        body: designData,
+      const response = await api.post("/api/v1/designs", designData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data;
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -23,17 +22,11 @@ export const getMyDesigns = createAsyncThunk(
   "design/getMyDesigns",
   async (searchQuery = "", { rejectWithValue }) => {
     try {
-      const url = searchQuery 
-        ? `/api/v1/designs?search=${encodeURIComponent(searchQuery)}`
-        : "/api/v1/designs";
-      const response = await fetch(url, {
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data.designs;
+      const params = searchQuery ? { search: searchQuery } : {};
+      const response = await api.get("/api/v1/designs", { params });
+      return response.data.designs;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -42,14 +35,10 @@ export const getDesignById = createAsyncThunk(
   "design/getDesignById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/designs/${id}`, {
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data.design;
+      const response = await api.get(`/api/v1/designs/${id}`);
+      return response.data.design;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -58,16 +47,14 @@ export const updateDesign = createAsyncThunk(
   "design/update",
   async ({ id, designData }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/designs/${id}`, {
-        method: "PUT",
-        credentials: "include",
-        body: designData,
+      const response = await api.put(`/api/v1/designs/${id}`, designData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data;
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -76,15 +63,10 @@ export const deleteDesign = createAsyncThunk(
   "design/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/designs/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
+      const response = await api.delete(`/api/v1/designs/${id}`);
       return id; // Return the ID of the deleted design
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );

@@ -1,18 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from '../../../utils/api.js';
 
 export const getUserAnalytics = createAsyncThunk(
   "analytics/getUserAnalytics",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/v1/analytics/user", {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data.analytics;
+      const response = await api.get("/api/v1/analytics/user");
+      return response.data.analytics;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );

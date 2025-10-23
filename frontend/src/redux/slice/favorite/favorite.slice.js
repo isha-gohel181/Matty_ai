@@ -1,22 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from '../../../utils/api.js';
 
 export const addToFavorites = createAsyncThunk(
   "favorite/addToFavorites",
   async (templateId, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/v1/favorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ templateId }),
-      });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data.favorite;
+      const response = await api.post("/api/v1/favorites", { templateId });
+      return response.data.favorite;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -25,15 +17,10 @@ export const removeFromFavorites = createAsyncThunk(
   "favorite/removeFromFavorites",
   async (templateId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/favorites/${templateId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
+      await api.delete(`/api/v1/favorites/${templateId}`);
       return templateId;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -42,14 +29,10 @@ export const getFavorites = createAsyncThunk(
   "favorite/getFavorites",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch("/api/v1/favorites", {
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data.favorites;
+      const response = await api.get("/api/v1/favorites");
+      return response.data.favorites;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -58,14 +41,10 @@ export const checkFavorite = createAsyncThunk(
   "favorite/checkFavorite",
   async (templateId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/favorites/check/${templateId}`, {
-        credentials: "include",
-      });
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return { templateId, isFavorited: data.isFavorited };
+      const response = await api.get(`/api/v1/favorites/check/${templateId}`);
+      return { templateId, isFavorited: response.data.isFavorited };
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
