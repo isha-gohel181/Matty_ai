@@ -294,6 +294,13 @@ const userSlice = createSlice({
         state.isRegistered = true;
         state.success = true;
         state.message = action.payload.message || 'Registration successful!';
+        // Store tokens in localStorage
+        if (action.payload.accessToken) {
+          localStorage.setItem('accessToken', action.payload.accessToken);
+        }
+        if (action.payload.refreshToken) {
+          localStorage.setItem('refreshToken', action.payload.refreshToken);
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.authLoading = false;
