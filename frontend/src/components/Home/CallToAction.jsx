@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from '@/redux/slice/user/user.slice.js';
 
 
 
 const CallToAction = () => {
   const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
  return (
 
@@ -20,9 +23,9 @@ const CallToAction = () => {
             Get unlimited AI suggestions, access all templates, and more with our Pro plans.
           </p>
 
-          <Button size="lg" variant="outline" className="mt-8 rounded-full bg-transparent px-8 py-6 text-lg hover:bg-white hover:text-black" onClick={() => navigate('/#pricing')}>
+          <Button size="lg" variant="outline" className="mt-8 rounded-full bg-transparent px-8 py-6 text-lg hover:bg-white hover:text-black" onClick={() => navigate(isAuthenticated ? '/dashboard/payment?plan=pro-monthly' : '/#pricing')}>
 
-            View Pricing Plans
+            {isAuthenticated ? 'Upgrade to Pro' : 'View Pricing Plans'}
 
           </Button>
 

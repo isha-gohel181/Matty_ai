@@ -1,10 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { selectIsAuthenticated } from '@/redux/slice/user/user.slice.js';
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   return (
     <section className="relative flex min-h-[calc(100vh-4rem)] items-center justify-center text-center pt-16">
@@ -27,9 +30,9 @@ const HeroSection = () => {
           <Button
             size="lg"
             className="rounded-full bg-gradient-to-r from-purple-500 to-teal-500 px-8 py-6 text-lg text-white hover:opacity-90 transition"
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate(isAuthenticated ? '/dashboard/editor' : '/signup')}
           >
-            Start Designing for Free
+            {isAuthenticated ? 'Go to Dashboard' : 'Start Designing for Free'}
           </Button>
         </div>
       </motion.div>
