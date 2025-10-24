@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <div className="bg-background text-foreground">
         <main>
-            <HeroSection />
+            <HeroSection /> 
             <FeaturesSection />
             <HowItWorksSection />
             <TemplatesSection />

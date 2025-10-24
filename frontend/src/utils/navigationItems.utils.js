@@ -1,4 +1,4 @@
-import { Activity, BarChart2, Database, FileUp, Home, Settings, Shield, User, LayoutTemplate, } from "lucide-react";
+import { Activity, BarChart2, Database, FileUp, Home, Settings, Shield, User, LayoutTemplate, TrendingUp } from "lucide-react";
 
 export const navigationItems = [
     {
@@ -31,5 +31,11 @@ export const navigationItems = [
         icon: Activity,
         badge: "3",
         path: "/dashboard/activity",
+    },
+    {
+        name: "Usage",
+        icon: TrendingUp,
+        badge: null,
+        path: "/dashboard/usage",
     },
 ];

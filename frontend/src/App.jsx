@@ -36,6 +36,9 @@ const AnalyticsPage = lazy(() => import("./pages/DashboardPages/AnalyticsPage"))
 // Payment Page
 const PaymentPage = lazy(() => import("./pages/DashboardPages/PaymentPage"));
 
+// Usage Page
+const UsagePage = lazy(() => import("./pages/DashboardPages/UsagePage"));
+
 // Admin Pages
 const AdminDashboard = lazy(() => import("./pages/DashboardPages/AdminDashboard"));
 const AdminUsers = lazy(() => import("./pages/DashboardPages/AdminUsers"));
@@ -111,6 +114,7 @@ const App = () => {
           <Route path="activity" element={<DashboardActivity />} />
           <Route path="templates" element={<TemplatesPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="usage" element={<UsagePage />} />
           <Route path="payment" element={<PaymentPage />} />
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="admin/users" element={<AdminUsers />} />

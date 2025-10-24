@@ -10,7 +10,6 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Trash2, Search, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
-import UsageStats from "@/components/Dashboard/UsageStats";
 
 const DashboardFile = () => {
   const dispatch = useDispatch();
@@ -126,11 +125,6 @@ const DashboardFile = () => {
   return (
     <div className="p-4 md:p-8">
       <h1 className="text-2xl md:text-3xl font-bold mb-8">My Designs</h1>
-
-      {/* Usage Stats */}
-      <div className="mb-8">
-        <UsageStats />
-      </div>
 
       {/* Search Bar */}
       <div className="mb-6 relative">
