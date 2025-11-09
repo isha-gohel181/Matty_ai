@@ -11,9 +11,11 @@ import {
     resetPassword,
     changeCurrentPassword,
     getLoggedInUserInfo,
+    getCurrentTokens,
     updateUserProfile,
     deleteUser,
-    updateUserAvatar
+    updateUserAvatar,
+    refreshAccessToken
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
@@ -25,6 +27,7 @@ const router = express.Router()
 // *Register and login routes
 router.route("/register").post(registerUser)
 router.route("/login").post(loginUser)
+router.route("/refresh-token").post(refreshAccessToken)
 
 // *OTP routes
 router.route("/otp/send").post(verifyJWT, sendOtpToUser)
@@ -37,6 +40,7 @@ router.route("/password/reset/:token").post(resetPassword)
 // *Authenticated user routes
 router.route("/password/update").post(verifyJWT, changeCurrentPassword)
 router.route("/dashboard").get(verifyJWT, getLoggedInUserInfo)
+router.route("/tokens").get(verifyJWT, getCurrentTokens)
 router.route("/profile/update").post(verifyJWT, updateUserProfile)
 router.route("/profile/avatar/update").post(verifyJWT, upload.single("avatar"), updateUserAvatar)
 router.route("/profile/delete").delete(verifyJWT, deleteUser)

@@ -15,6 +15,7 @@ const Register = lazy(() => import("./pages/AuthPages/Register"));
 const Login = lazy(() => import("./pages/AuthPages/Login"));
 const ForgotPassword = lazy(() => import("./pages/AuthPages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/AuthPages/ResetPassword")); // Import ResetPassword
+const OAuthSuccess = lazy(() => import("./pages/AuthPages/OAuthSuccess"));
 const AuthPageLayout = lazy(() => import("./components/Layout/AuthPageLayout"));
 
 // Import the new DashboardLayout
@@ -96,6 +97,7 @@ const App = () => {
           />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} /> {/* Add this route */}
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
         </Route>
 
         {/* Protected Dashboard Routes with Layout */}

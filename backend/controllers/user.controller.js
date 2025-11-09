@@ -661,6 +661,22 @@ const getLoggedInUserInfo = asyncHandler(async (req, res, next) => {
     })
 })
 
+// *Get current tokens (for OAuth success)
+const getCurrentTokens = asyncHandler(async (req, res, next) => {
+    const accessToken = req.cookies?.accessToken;
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (!accessToken) {
+        return next(new ErrorHandler("No access token found", 401));
+    }
+
+    res.status(200).json({
+        success: true,
+        accessToken,
+        refreshToken
+    });
+});
+
 // *Delete User
 const deleteUser = asyncHandler(async (req, res, next) => {
     try {
@@ -693,6 +709,7 @@ export {
     sendResetPasswordLinkToUser,
     resetPassword,
     getLoggedInUserInfo,
+    getCurrentTokens,
     changeCurrentPassword,
     updateUserProfile,
     updateUserAvatar,

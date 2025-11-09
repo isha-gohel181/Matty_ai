@@ -2,6 +2,7 @@ import express from "express";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import session from "express-session";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import Razorpay from "razorpay";
 
@@ -15,6 +16,7 @@ import favoriteRouter from "./routes/favorite.route.js";
 import analyticsRouter from "./routes/analytics.route.js";
 import aiRouter from "./routes/ai.route.js";
 import paymentRouter from "./routes/payment.route.js";
+import authRouter from "./routes/auth.route.js";
 
 const app = express();
 
@@ -26,12 +28,30 @@ export const instance = new Razorpay({
     key_secret: process.env.KEY_SECRET,
 });
 
+// Import passport after dotenv config
+import passport from "./utils/passport.utils.js";
+
 // *===================================
 // *Neccessary-Middlewares
 app.use(express.json({ limit: "16mb" })); // Increased limit for JSON data
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
+
+// Session middleware for Passport
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
@@ -63,6 +83,7 @@ app.use("/api/v1/favorites", favoriteRouter);
 app.use("/api/v1/analytics", analyticsRouter);
 app.use("/api/v1/ai", aiRouter);
 app.use("/api/v1/payment", paymentRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.use(errorMiddleware);
 // *End-Of-Neccessary-Middlewares

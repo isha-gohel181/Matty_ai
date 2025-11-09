@@ -29,7 +29,7 @@ const Sidebar = ({ onClose }) => {
 
   const handleLogout = () => {
     dispatch(logoutUser()).then(() => {
-      navigate("/login");
+      navigate("/");
     });
   };
 

@@ -14,11 +14,14 @@ const userSchema = new Schema({
     },
     phone: {
         type: Number,
-        required: true,
+        required: function() {
+            return !this.googleId; // Phone required only if not a Google user
+        },
         unique: true,
         trim: true,
         validate: {
             validator: function (value) {
+                if (!value) return true; // Allow empty for Google users
                 const str = value.toString();
                 return /^[6-9]\d{9}$/.test(str) && Number.isInteger(value);
             },
@@ -48,9 +51,16 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: function() {
+            return !this.googleId; // Password required only if not a Google user
+        },
         minlength: [8, "Password must be at least 8 chatacter long"],
         // select: false
+    },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true // Allows null values and unique constraint only on non-null
     },
     role: {
         type: String,
