@@ -35,7 +35,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 // @access  Private
 export const verifyPayment = asyncHandler(async (req, res, next) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature, plan } = req.body;
-
+  console.log(req.body);
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !plan) {
     return next(new ErrorHandler("All payment details are required", 400));
   }

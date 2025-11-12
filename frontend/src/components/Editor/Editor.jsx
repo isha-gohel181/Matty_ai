@@ -162,11 +162,15 @@ const Editor = () => {
       formData.append("thumbnail", blob, `${title.replace(/\s+/g, "-")}.png`);
 
       if (id) {
-        dispatch(updateDesign({ id, designData: formData }));
+        dispatch(updateDesign({ id, designData: formData })).then((action) => {
+          if (action.type === "design/update/fulfilled") {
+            navigate("/dashboard/files");
+          }
+        });
       } else {
         dispatch(createDesign(formData)).then((action) => {
           if (action.type === "design/create/fulfilled") {
-            navigate(`/dashboard/editor/${action.payload.design._id}`);
+            navigate("/dashboard/files");
           }
         });
       }
@@ -209,7 +213,7 @@ const Editor = () => {
         {error && <p className="text-red-500 text-sm">{error.message || JSON.stringify(error)}</p>}
         {imageError && <p className="text-red-500 text-sm">{imageError.message || JSON.stringify(imageError)}</p>}
 
-        <div className="flex-grow" />
+        <div className="grow" />
 
         {/* <div className="flex items-center gap-2">
           <input

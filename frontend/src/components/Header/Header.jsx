@@ -26,7 +26,9 @@ const Header = () => {
 
   const navLinks = [
     { name: "Features", href: "#features" },
-    { name: "Templates", href: "#" },
+    { name: "How It Works", href: "#how-it-works" },
+    { name: "Pricing", href: "#pricing" },
+    { name: "Testimonials", href: "#testimonials" },
   ];
 
   return (
@@ -37,7 +39,7 @@ const Header = () => {
       className="fixed top-0 left-0 right-0 z-50"
     >
       <div className="mx-auto max-w-screen-xl px-4 py-3">
-        <div className="flex items-center justify-between rounded-full bg-card/80 backdrop-blur-xl border border-border p-3 px-6 shadow-lg">
+        <div className="flex items-center justify-between rounded-full bg-background/30 backdrop-blur-md border border-white/10 p-3 px-6 shadow-lg">
           
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-foreground tracking-wide">
@@ -96,7 +98,7 @@ const Header = () => {
 
                 <Button
                   onClick={() => navigate('/signup')}
-                  className="rounded-full bg-gradient-to-r from-purple-500 to-teal-500 text-white px-5 hover:opacity-90 transition"
+                  className="rounded-full px-5"
                 >
                   Sign Up
                 </Button>
@@ -115,7 +117,7 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {open && (
-          <div className="md:hidden mt-2 bg-card/80 backdrop-blur-xl border border-border rounded-xl p-4 flex flex-col gap-4 shadow-lg">
+          <div className="md:hidden mt-2 bg-background/30 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col gap-4 shadow-lg">
             {navLinks.map((link, idx) => (
               <a
                 key={idx}
@@ -158,13 +160,15 @@ const Header = () => {
                 >
                   Log In
                 </Link>
-                <Link
-                  to="/signup"
-                  className="bg-gradient-to-r from-purple-500 to-teal-500 text-white text-center rounded-full py-2 font-medium hover:opacity-90 transition"
-                  onClick={() => setOpen(false)}
+                <Button
+                  onClick={() => {
+                    navigate('/signup');
+                    setOpen(false);
+                  }}
+                  className="rounded-full w-full"
                 >
                   Sign Up
-                </Link>
+                </Button>
               </>
             )}
           </div>

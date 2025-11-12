@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { registerUser, selectAuthLoading, selectError, clearError } from '@/redux/slice/user/user.slice.js';
 import CustomAlert from '@/components/CustomAlert/CustomAlert';
 
@@ -51,46 +51,79 @@ const Register = () => {
   return (
     <>
       {error && <CustomAlert type="error" message={error} onClose={() => dispatch(clearError())} />}
-      <Card className="w-full max-w-md border-0 bg-transparent shadow-none">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl md:text-3xl font-bold">Create Account</CardTitle>
-          <CardDescription>Fill in your details to get started.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input id="fullName" placeholder="John Doe" {...register('fullName')} />
-              {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="name@example.com" {...register('email')} />
-              {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" placeholder="9876543210" {...register('phone')} />
-              {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="••••••••" {...register('password')} />
-              {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
-            </div>
-            
-            <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:opacity-90 transition-opacity" disabled={isLoading}>
-              {isLoading ? 'Creating Account...' : 'Create Account'}
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-primary underline-offset-4 hover:underline">
-              Log in
-            </Link>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="flex flex-col items-center gap-6 text-center"
+      >
+        <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl text-foreground">
+          Create Account
+        </h1>
+        <p className="max-w-sm text-lg text-muted-foreground">
+          Fill in your details to get started and begin creating stunning designs.
+        </p>
+        
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="fullName" className="text-left block text-foreground">Full Name</Label>
+            <Input 
+              id="fullName" 
+              placeholder="John Doe" 
+              {...register('fullName')}
+              className="bg-white/10 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-white/40"
+            />
+            {errors.fullName && <p className="text-sm text-destructive text-left">{errors.fullName.message}</p>}
           </div>
-        </CardContent>
-      </Card>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-left block text-foreground">Email</Label>
+            <Input 
+              id="email" 
+              type="email" 
+              placeholder="name@example.com" 
+              {...register('email')}
+              className="bg-white/10 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-white/40"
+            />
+            {errors.email && <p className="text-sm text-destructive text-left">{errors.email.message}</p>}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-left block text-foreground">Phone</Label>
+            <Input 
+              id="phone" 
+              placeholder="9876543210" 
+              {...register('phone')}
+              className="bg-white/10 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-white/40"
+            />
+            {errors.phone && <p className="text-sm text-destructive text-left">{errors.phone.message}</p>}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-left block text-foreground">Password</Label>
+            <Input 
+              id="password" 
+              type="password" 
+              placeholder="••••••••" 
+              {...register('password')}
+              className="bg-white/10 border-white/20 text-foreground placeholder:text-muted-foreground focus:border-white/40"
+            />
+            {errors.password && <p className="text-sm text-destructive text-left">{errors.password.message}</p>}
+          </div>
+          
+          <Button 
+            type="submit" 
+            className="w-full rounded-full bg-white text-black px-8 py-6 text-lg font-semibold hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl" 
+            disabled={isLoading}
+          >
+            {isLoading ? 'Creating Account...' : 'Create Account'}
+          </Button>
+        </form>
+        
+        <div className="text-center text-sm text-muted-foreground">
+          Already have an account?{' '}
+          <Link to="/login" className="font-semibold text-primary underline-offset-4 hover:underline">
+            Log in
+          </Link>
+        </div>
+      </motion.div>
     </>
   );
 };
