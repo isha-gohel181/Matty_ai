@@ -74,7 +74,7 @@ const DashboardProfile = () => {
     if (user) {
       setValue("fullName", user.fullName);
       setValue("email", user.email);
-      setValue("phone", user.phone);
+      setValue("phone", String(user.phone));
     }
     return () => dispatch(clearError());
   }, [user, setValue, dispatch]);
@@ -168,7 +168,7 @@ const DashboardProfile = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone</Label>
-                      <Input id="phone" {...registerProfile("phone")} />
+                      <Input id="phone" type="tel" {...registerProfile("phone")} />
                       {profileErrors.phone && <p className="text-sm text-destructive">{profileErrors.phone.message}</p>}
                     </div>
                     <Button type="submit" disabled={profileLoading}>
