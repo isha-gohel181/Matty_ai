@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyAuth } from "../middlewares/combinedAuth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import {
   createDesign,
@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 // All routes are protected
-router.use(verifyJWT);
+router.use(verifyAuth);
 
 router
   .route("/")

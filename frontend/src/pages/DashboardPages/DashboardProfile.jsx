@@ -23,6 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera } from "lucide-react";
 import CustomAlert from "@/components/CustomAlert/CustomAlert";
 import { toast } from "sonner";
+import ApiKeysTab from "@/components/ApiKeysTab";
 
 // Zod schemas for validation
 const profileSchema = z.object({
@@ -142,9 +143,10 @@ const DashboardProfile = () => {
         {/* RIGHT COLUMN: TABS FOR FORMS */}
         <div className="lg:col-span-2">
           <Tabs defaultValue="profile" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
+              <TabsTrigger value="api-keys">API Keys</TabsTrigger>
             </TabsList>
 
             {/* Profile Information Tab */}
@@ -209,6 +211,11 @@ const DashboardProfile = () => {
                   </form>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* API Keys Tab */}
+            <TabsContent value="api-keys">
+              <ApiKeysTab />
             </TabsContent>
           </Tabs>
         </div>

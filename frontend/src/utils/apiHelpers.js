@@ -54,6 +54,19 @@ export const apiHelpers = {
     }
   },
 
+  // PATCH request
+  patch: async (url, data = {}, config = {}) => {
+    try {
+      const response = await api.patch(url, data, config);
+      return { success: true, data: response.data };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error.response?.data || { message: error.message } 
+      };
+    }
+  },
+
   // For FormData uploads
   postFormData: async (url, formData, config = {}) => {
     try {

@@ -1,12 +1,12 @@
 import express from "express";
 import { getDesignSuggestions, generateColorPalette } from "../controllers/ai.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyAuth } from "../middlewares/combinedAuth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
-// All routes require authentication
-router.use(verifyJWT);
+// All routes require authentication (JWT or API key)
+router.use(verifyAuth);
 
 router.route("/suggestions").post(getDesignSuggestions);
 router.route("/palette").post(upload.single("image"), generateColorPalette);

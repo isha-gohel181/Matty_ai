@@ -89,13 +89,22 @@ const incrementUsage = async (userId, serviceType) => {
 };
 
 // Initialize the Google Generative AI client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+let genAI;
+if (process.env.GEMINI_API_KEY) {
+  genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+} else {
+  console.warn('GEMINI_API_KEY not found. AI features will not work.');
+}
 
 export const getDesignSuggestions = asyncHandler(async (req, res, next) => {
   const { prompt } = req.body;
 
   if (!prompt) {
     return next(new ErrorHandler("Prompt is required", 400));
+  }
+
+  if (!genAI) {
+    return next(new ErrorHandler("AI service is not configured. Please add GEMINI_API_KEY to environment variables.", 503));
   }
 
   // Check usage limits
