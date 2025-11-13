@@ -17,6 +17,7 @@ import analyticsRouter from "./routes/analytics.route.js";
 import aiRouter from "./routes/ai.route.js";
 import paymentRouter from "./routes/payment.route.js";
 import authRouter from "./routes/auth.route.js";
+import MongoStore from 'connect-mongo';
 
 const app = express();
 
@@ -43,6 +44,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'your-session-secret',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.CONNECTIONSTRING + '/' + process.env.DBNAME,
+    ttl: 24 * 60 * 60 // 24 hours in seconds
+  }),
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
