@@ -91,10 +91,45 @@ const Editor = () => {
 
   useEffect(() => {
     if (currentTemplate) {
-      const loadedElements = JSON.parse(currentTemplate.excalidrawJSON);
-      setElements(loadedElements);
-      setTitle(currentTemplate.title);
-      setKey((prev) => prev + 1);
+      try {
+        let loadedData = currentTemplate.excalidrawJSON;
+        
+        // Handle string JSON that needs parsing
+        if (typeof loadedData === 'string') {
+          loadedData = JSON.parse(loadedData);
+        }
+        
+        // If it's still a string after parsing (double-encoded), parse again
+        if (typeof loadedData === 'string') {
+          loadedData = JSON.parse(loadedData);
+        }
+        
+        // Extract elements from the Excalidraw state object
+        let loadedElements = loadedData;
+        if (loadedData && typeof loadedData === 'object' && !Array.isArray(loadedData)) {
+          // If it's an object with an 'elements' property, extract it
+          if (loadedData.elements && Array.isArray(loadedData.elements)) {
+            loadedElements = loadedData.elements;
+          } else {
+            console.warn('Could not find elements array in template data:', loadedData);
+            loadedElements = [];
+          }
+        }
+        
+        // Ensure it's an array
+        if (!Array.isArray(loadedElements)) {
+          console.warn('Loaded elements is not an array:', loadedElements);
+          loadedElements = [];
+        }
+        
+        setElements(loadedElements);
+        setTitle(currentTemplate.title);
+        setKey((prev) => prev + 1);
+      } catch (error) {
+        console.error('Error parsing template JSON:', error);
+        setElements([]);
+        setTitle(currentTemplate.title);
+      }
     }
   }, [currentTemplate]);
 

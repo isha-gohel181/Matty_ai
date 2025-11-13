@@ -29,9 +29,24 @@ export const createTemplate = asyncHandler(async (req, res, next) => {
     return next(new ErrorHandler("Error uploading thumbnail", 500));
   }
 
+  // Ensure excalidrawJSON is properly stored
+  // If it's an object, stringify it; if it's already a string, keep it
+  let processedJSON = excalidrawJSON;
+  if (typeof excalidrawJSON === 'object') {
+    processedJSON = JSON.stringify(excalidrawJSON);
+  } else if (typeof excalidrawJSON === 'string') {
+    // Validate that it's valid JSON
+    try {
+      JSON.parse(excalidrawJSON);
+      processedJSON = excalidrawJSON;
+    } catch (error) {
+      return next(new ErrorHandler("Invalid Excalidraw JSON format", 400));
+    }
+  }
+
   const template = await Template.create({
     title,
-    excalidrawJSON,
+    excalidrawJSON: processedJSON,
     thumbnailUrl: {
       public_id: thumbnail.public_id,
       secure_url: thumbnail.secure_url,

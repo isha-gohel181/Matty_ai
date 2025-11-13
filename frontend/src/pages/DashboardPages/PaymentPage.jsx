@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import api from '@/utils/api';
+import { getLoggedInUserInfo } from '@/redux/slice/user/user.slice';
 
 const PaymentPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
 
@@ -74,9 +77,12 @@ const PaymentPage = () => {
       }
 
       // Create order
+      // Convert 'pro-monthly' to 'monthly' and 'pro-yearly' to 'yearly'
+      const planType = plan.includes('monthly') ? 'monthly' : 'yearly';
+      
       const { data } = await api.post('/api/v1/payment/create-order', {
         amount: currentPlan.price,
-        plan: plan.replace('-', '')
+        plan: planType
       });
 
       const options = {
@@ -89,17 +95,23 @@ const PaymentPage = () => {
         handler: async function (response) {
           try {
             // Verify payment
+            // Convert 'pro-monthly' to 'monthly' and 'pro-yearly' to 'yearly'
+            const planType = plan.includes('monthly') ? 'monthly' : 'yearly';
+            
             const verifyResponse = await api.post('/api/v1/payment/verify', {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              plan: plan.replace('-', '')
+              plan: planType
             });
 
             setPaymentStatus('success');
             toast.success('Payment successful! Subscription activated.');
-            setTimeout(() => navigate('/dashboard'), 3000);
+            // Update user info to reflect new subscription
+            dispatch(getLoggedInUserInfo());
+            setTimeout(() => navigate('/dashboard/usage'), 3000);
           } catch (error) {
+            console.error('Payment verification error:', error);
             setPaymentStatus('failed');
             toast.error('Payment verification failed');
           }
@@ -193,7 +205,7 @@ const PaymentPage = () => {
               <ul className="space-y-2">
                 {currentPlan.features.map((feature, index) => (
                   <li key={index} className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                    <CheckCircle className="h-4 w-4 text-green-500 mr-2 shrink-0" />
                     {feature}
                   </li>
                 ))}

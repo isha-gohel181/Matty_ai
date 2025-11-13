@@ -35,8 +35,10 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 // @access  Private
 export const verifyPayment = asyncHandler(async (req, res, next) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature, plan } = req.body;
-  console.log(req.body);
+  console.log('Payment verification request body:', req.body);
+  
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !plan) {
+    console.log('Missing payment details:', { razorpay_order_id, razorpay_payment_id, razorpay_signature, plan });
     return next(new ErrorHandler("All payment details are required", 400));
   }
 
@@ -48,6 +50,7 @@ export const verifyPayment = asyncHandler(async (req, res, next) => {
     .digest("hex");
 
   if (razorpay_signature !== expectedSign) {
+    console.log('Signature mismatch:', { received: razorpay_signature, expected: expectedSign });
     return next(new ErrorHandler("Payment verification failed", 400));
   }
 
@@ -70,6 +73,7 @@ export const verifyPayment = asyncHandler(async (req, res, next) => {
       subscriptionEndDate = new Date(now.setFullYear(now.getFullYear() + 1));
       break;
     default:
+      console.log('Invalid plan received:', plan);
       return next(new ErrorHandler("Invalid plan", 400));
   }
 
