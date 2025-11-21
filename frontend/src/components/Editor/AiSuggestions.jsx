@@ -4,17 +4,25 @@ import { getDesignSuggestions } from '@/redux/slice/ai/ai.slice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Loader, Lightbulb } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Sparkles, Loader, Lightbulb, Wand2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const AiSuggestions = () => {
+const AiSuggestions = ({ onApplyTemplate }) => {
   const [prompt, setPrompt] = useState('');
+  const [generateTemplate, setGenerateTemplate] = useState(false);
   const dispatch = useDispatch();
-  const { suggestions, loading, error } = useSelector((state) => state.ai);
+  const { suggestions, template, loading, error } = useSelector((state) => state.ai);
 
   const handleGetSuggestions = () => {
     if (prompt.trim()) {
-      dispatch(getDesignSuggestions(prompt));
+      dispatch(getDesignSuggestions({ prompt, generateTemplate }));
+    }
+  };
+
+  const handleApplyTemplate = () => {
+    if (template && onApplyTemplate) {
+      onApplyTemplate(template);
     }
   };
 
@@ -39,6 +47,20 @@ const AiSuggestions = () => {
             <Button onClick={handleGetSuggestions} disabled={loading} size="sm">
               {loading ? <Loader className="animate-spin w-4 h-4" /> : <Lightbulb className="w-4 h-4" />}
             </Button>
+          </div>
+
+          <div className="flex items-center space-x-2 mb-3">
+            <Checkbox
+              id="generate-template"
+              checked={generateTemplate}
+              onCheckedChange={setGenerateTemplate}
+            />
+            <label
+              htmlFor="generate-template"
+              className="text-xs text-muted-foreground cursor-pointer"
+            >
+              Generate complete template
+            </label>
           </div>
           
           <AnimatePresence>
@@ -72,6 +94,20 @@ const AiSuggestions = () => {
                   <h4 className="font-medium text-xs mb-1 text-muted-foreground">Layout</h4>
                   <p className="text-xs italic">"{suggestions.layout}"</p>
                 </div>
+
+                {template && (
+                  <div className="pt-2 border-t border-border">
+                    <Button
+                      onClick={handleApplyTemplate}
+                      size="sm"
+                      className="w-full"
+                      variant="default"
+                    >
+                      <Wand2 className="w-3 h-3 mr-1" />
+                      Apply Template
+                    </Button>
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

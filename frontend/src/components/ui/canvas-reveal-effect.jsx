@@ -10,7 +10,7 @@ export const CanvasRevealEffect = ({
   colors = [[0, 255, 255]],
   containerClassName,
   dotSize,
-  showGradient = true,
+  showGradient = false,
 }) => {
   return (
     <div className={cn("h-full relative bg-white w-full", containerClassName)}>
@@ -40,7 +40,7 @@ export const CanvasRevealEffect = ({
 const DotMatrix = ({
   colors = [[0, 0, 0]],
   opacities = [0.04, 0.04, 0.04, 0.04, 0.04, 0.08, 0.08, 0.08, 0.08, 0.14],
-  totalSize = 4,
+  totalSize = 6,
   dotSize = 2,
   shader = "",
   center = ["x", "y"],

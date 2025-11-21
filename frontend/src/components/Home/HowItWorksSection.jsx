@@ -9,21 +9,21 @@ const steps = [
     title: "Select a Template",
     description: "Choose from professionally designed templates or start with a blank canvas to kickstart your project.",
     colors: [[125, 211, 252]], // Sky blue
-    containerClassName: "bg-sky-600",
+    containerClassName: "bg-black",
   },
   {
     icon: <Sparkles size={32} />,
     title: "Customize with AI",
     description: "Use our intuitive editor and AI-powered tools to bring your unique vision to life effortlessly.",
     colors: [[236, 72, 153], [232, 121, 249]], // Pink to purple gradient
-    containerClassName: "bg-pink-600",
+    containerClassName: "bg-black",
   },
   {
     icon: <Download size={32} />,
     title: "Export & Share",
     description: "Download your final design in high-resolution formats and share it with the world.",
     colors: [[34, 197, 94]], // Green
-    containerClassName: "bg-emerald-600",
+    containerClassName: "bg-black",
   },
 ];
 
@@ -33,7 +33,7 @@ const Card = ({ title, icon, children, description }) => {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="border border-black/20 group/canvas-card flex items-center justify-center dark:border-white/20 max-w-sm w-full mx-auto p-4 relative h-120"
+      className="border border-black/20 group/canvas-card flex items-center justify-center dark:border-white/20 max-w-xs w-full mx-auto p-3 relative h-80"
     >
       <div className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
@@ -107,10 +107,11 @@ const HowItWorksSection = () => {
               description={step.description}
             >
               <CanvasRevealEffect
-                animationSpeed={3}
+                animationSpeed={1.5}
                 containerClassName={step.containerClassName}
                 colors={step.colors}
-                dotSize={2}
+                dotSize={2.5}
+                opacities={[0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.65]}
               />
             </Card>
           ))}

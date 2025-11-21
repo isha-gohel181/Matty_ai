@@ -43,7 +43,7 @@ const Header = () => {
           
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-foreground tracking-wide">
-            Matty
+            Matty AI
           </Link>
 
           {/* Desktop Menu */}
@@ -52,7 +52,7 @@ const Header = () => {
               <a
                 key={idx}
                 href={link.href}
-                className="text-foreground/80 hover:text-foreground transition-colors font-medium"
+                className="relative overflow-hidden text-foreground/80 hover:text-foreground transition-colors font-medium after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-current after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
               >
                 {link.name}
               </a>
@@ -122,7 +122,7 @@ const Header = () => {
               <a
                 key={idx}
                 href={link.href}
-                className="text-foreground/80 hover:text-foreground transition-colors font-medium"
+                className="relative overflow-hidden text-foreground/80 hover:text-foreground transition-colors font-medium after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-current after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
                 onClick={() => setOpen(false)}
               >
                 {link.name}

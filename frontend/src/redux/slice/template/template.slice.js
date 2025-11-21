@@ -56,6 +56,61 @@ export const createTemplate = createAsyncThunk(
   }
 );
 
+// Generate Template Data using AI
+export const generateTemplateData = createAsyncThunk(
+  "template/generateTemplateData",
+  async (description, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/api/v1/ai/generate-template', { description });
+      return response.data.templateData;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: error.message });
+    }
+  }
+);
+
+// Update Template (Admin only)
+export const updateTemplate = createAsyncThunk(
+  "template/updateTemplate",
+  async ({ id, templateData }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append('title', templateData.title);
+      formData.append('excalidrawJSON', templateData.excalidrawJSON);
+      formData.append('category', templateData.category);
+      if (templateData.tags) {
+        formData.append('tags', templateData.tags);
+      }
+      if (templateData.thumbnail) {
+        formData.append('thumbnail', templateData.thumbnail);
+      }
+
+      const response = await api.put(`/api/v1/templates/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      return response.data.template;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: error.message });
+    }
+  }
+);
+
+// Delete Template (Admin only)
+export const deleteTemplate = createAsyncThunk(
+  "template/deleteTemplate",
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/api/v1/templates/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: error.message });
+    }
+  }
+);
+
 const initialState = {
   templates: [],
   currentTemplate: null, // Add this to hold the loaded template
@@ -107,6 +162,46 @@ const templateSlice = createSlice({
         state.templates.unshift(action.payload); // Add new template to the beginning
       })
       .addCase(createTemplate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Generate Template Data
+      .addCase(generateTemplateData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(generateTemplateData.fulfilled, (state, action) => {
+        state.loading = false;
+        // The generated data will be used in the component
+      })
+      .addCase(generateTemplateData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Update Template
+      .addCase(updateTemplate.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateTemplate.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedTemplate = action.payload;
+        const index = state.templates.findIndex(template => template._id === updatedTemplate._id);
+        if (index !== -1) {
+          state.templates[index] = updatedTemplate;
+        }
+      })
+      .addCase(updateTemplate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Delete Template
+      .addCase(deleteTemplate.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteTemplate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.templates = state.templates.filter(template => template._id !== action.payload);
+      })
+      .addCase(deleteTemplate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

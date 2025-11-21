@@ -18,6 +18,7 @@ import aiRouter from "./routes/ai.route.js";
 import paymentRouter from "./routes/payment.route.js";
 import authRouter from "./routes/auth.route.js";
 import apiKeyRouter from "./routes/apiKey.route.js";
+import teamRouter from "./routes/team.route.js";
 import MongoStore from 'connect-mongo';
 
 const app = express();
@@ -91,6 +92,7 @@ app.use("/api/v1/ai", aiRouter);
 app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/api-keys", apiKeyRouter);
+app.use("/api/v1/teams", teamRouter);
 
 app.use(errorMiddleware);
 // *End-Of-Neccessary-Middlewares

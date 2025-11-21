@@ -143,6 +143,25 @@ const userSchema = new Schema({
         colorPalettes: { type: Number, default: 0 }
     },
 
+    // Team collaboration
+    teams: [
+        {
+            team: {
+                type: Schema.Types.ObjectId,
+                ref: "Team",
+            },
+            role: {
+                type: String,
+                enum: ["owner", "admin", "member"],
+                default: "member",
+            },
+            joinedAt: {
+                type: Date,
+                default: Date.now,
+            },
+        },
+    ],
+
 },
     {
         timestamps: true,

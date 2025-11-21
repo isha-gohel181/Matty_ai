@@ -52,18 +52,8 @@ export const refreshAccessToken = createAsyncThunk(
   'user/refreshToken',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/v1/users/refresh-token', {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.post('/api/v1/users/refresh-token', {});
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -128,21 +118,8 @@ export const resetPassword = createAsyncThunk(
   'user/resetPassword',
   async ({ token, password }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/v1/users/reset-password/${token}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return rejectWithValue(data);
-      }
-
-      return data;
+      const response = await api.post(`/api/v1/users/reset-password/${token}`, { password });
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }

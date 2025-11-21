@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getTemplates, createTemplate } from '@/redux/slice/template/template.slice';
+import { getTemplates, createTemplate, generateTemplateData, updateTemplate, deleteTemplate } from '@/redux/slice/template/template.slice';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Plus, LayoutTemplate, Edit, Trash2, Upload } from 'lucide-react';
+import { Plus, LayoutTemplate, Edit, Trash2, Upload, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const AdminTemplates = () => {
@@ -18,12 +18,14 @@ const AdminTemplates = () => {
   const { templates, loading } = useSelector((state) => state.template);
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     category: 'General',
     tags: '',
     excalidrawJSON: '',
     thumbnail: null,
+    description: '', // Add description for AI generation
   });
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
 
@@ -51,28 +53,87 @@ const AdminTemplates = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.title || !formData.excalidrawJSON || !formData.thumbnail) {
-      toast.error('Please fill in all required fields');
+  const handleGenerateWithAI = async () => {
+    if (!formData.description.trim()) {
+      toast.error('Please enter a description for AI generation');
       return;
     }
 
     try {
-      await dispatch(createTemplate(formData)).unwrap();
-      toast.success('Template created successfully!');
-      setIsCreateDialogOpen(false);
-      setFormData({
-        title: '',
-        category: 'General',
-        tags: '',
-        excalidrawJSON: '',
-        thumbnail: null,
-      });
-      setThumbnailPreview(null);
+      const result = await dispatch(generateTemplateData(formData.description)).unwrap();
+      setFormData(prev => ({
+        ...prev,
+        title: result.title || prev.title,
+        category: result.category || prev.category,
+        tags: result.tags ? result.tags.join(', ') : prev.tags,
+        excalidrawJSON: result.excalidrawJSON ? JSON.stringify(result.excalidrawJSON, null, 2) : prev.excalidrawJSON,
+      }));
+      toast.success('Template data generated successfully!');
     } catch (error) {
-      toast.error(error.message || 'Failed to create template');
+      toast.error(error.message || 'Failed to generate template data');
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.title || !formData.excalidrawJSON) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    // For updates, thumbnail is optional
+    if (!editingTemplate && !formData.thumbnail) {
+      toast.error('Please select a thumbnail');
+      return;
+    }
+
+    try {
+      if (editingTemplate) {
+        // Update existing template
+        await dispatch(updateTemplate({ 
+          id: editingTemplate._id, 
+          templateData: formData 
+        })).unwrap();
+        toast.success('Template updated successfully!');
+      } else {
+        // Create new template
+        await dispatch(createTemplate(formData)).unwrap();
+        toast.success('Template created successfully!');
+      }
+      
+      setIsCreateDialogOpen(false);
+      resetForm();
+      setEditingTemplate(null);
+    } catch (error) {
+      toast.error(error.message || `Failed to ${editingTemplate ? 'update' : 'create'} template`);
+    }
+  };
+
+  const handleEdit = (template) => {
+    setEditingTemplate(template);
+    setFormData({
+      title: template.title,
+      category: template.category,
+      tags: template.tags ? template.tags.join(', ') : '',
+      excalidrawJSON: typeof template.excalidrawJSON === 'string' 
+        ? template.excalidrawJSON 
+        : JSON.stringify(template.excalidrawJSON, null, 2),
+      thumbnail: null, // Will be optional for updates
+      description: '',
+    });
+    setThumbnailPreview(template.thumbnailUrl.secure_url);
+    setIsCreateDialogOpen(true);
+  };
+
+  const handleDelete = async (templateId) => {
+    if (window.confirm('Are you sure you want to delete this template? This action cannot be undone.')) {
+      try {
+        await dispatch(deleteTemplate(templateId)).unwrap();
+        toast.success('Template deleted successfully!');
+      } catch (error) {
+        toast.error(error.message || 'Failed to delete template');
+      }
     }
   };
 
@@ -83,8 +144,10 @@ const AdminTemplates = () => {
       tags: '',
       excalidrawJSON: '',
       thumbnail: null,
+      description: '',
     });
     setThumbnailPreview(null);
+    setEditingTemplate(null);
   };
 
   if (loading && templates.length === 0) {
@@ -107,7 +170,12 @@ const AdminTemplates = () => {
               Create and manage templates for users
             </p>
           </div>
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <Dialog open={isCreateDialogOpen} onOpenChange={(open) => {
+            setIsCreateDialogOpen(open);
+            if (!open) {
+              resetForm();
+            }
+          }}>
             <DialogTrigger asChild>
               <Button onClick={resetForm}>
                 <Plus className="mr-2 h-4 w-4" />
@@ -116,9 +184,30 @@ const AdminTemplates = () => {
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Create New Template</DialogTitle>
+                <DialogTitle>{editingTemplate ? 'Edit Template' : 'Create New Template'}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="description">Description for AI Generation</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
+                    placeholder="Describe the template you want to create (e.g., 'A modern business card with company logo, name, and contact info')"
+                    rows={3}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleGenerateWithAI}
+                    disabled={loading}
+                    className="mt-2 w-full"
+                  >
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    {loading ? 'Generating...' : 'Generate with AI'}
+                  </Button>
+                </div>
+
                 <div>
                   <Label htmlFor="title">Title *</Label>
                   <Input
@@ -156,7 +245,7 @@ const AdminTemplates = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="thumbnail">Thumbnail *</Label>
+                  <Label htmlFor="thumbnail">Thumbnail {editingTemplate ? '(optional)' : '*'}</Label>
                   <div className="mt-2">
                     <Input
                       id="thumbnail"
@@ -211,7 +300,7 @@ const AdminTemplates = () => {
                     Cancel
                   </Button>
                   <Button type="submit" disabled={loading}>
-                    {loading ? 'Creating...' : 'Create Template'}
+                    {loading ? (editingTemplate ? 'Updating...' : 'Creating...') : (editingTemplate ? 'Update Template' : 'Create Template')}
                   </Button>
                 </div>
               </form>
@@ -243,8 +332,7 @@ const AdminTemplates = () => {
                     className="bg-white/80 hover:bg-white/90 h-8 w-8 p-0"
                     onClick={(e) => {
                       e.preventDefault();
-                      // TODO: Implement edit functionality
-                      toast.info('Edit functionality coming soon');
+                      handleEdit(template);
                     }}
                   >
                     <Edit className="h-4 w-4 text-gray-600" />
@@ -255,8 +343,7 @@ const AdminTemplates = () => {
                     className="bg-white/80 hover:bg-white/90 h-8 w-8 p-0"
                     onClick={(e) => {
                       e.preventDefault();
-                      // TODO: Implement delete functionality
-                      toast.info('Delete functionality coming soon');
+                      handleDelete(template._id);
                     }}
                   >
                     <Trash2 className="h-4 w-4 text-red-600" />

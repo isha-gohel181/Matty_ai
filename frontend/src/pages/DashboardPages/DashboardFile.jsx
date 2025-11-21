@@ -4,20 +4,32 @@ import { Link } from "react-router-dom";
 import {
   getMyDesigns,
   deleteDesign,
+  shareDesignWithTeam,
 } from "@/redux/slice/design/design.slice";
+import { fetchUserTeams } from "@/redux/slice/team/teamSlice";
+import { selectUser } from "@/redux/slice/user/user.slice";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Trash2, Search, Share2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Trash2, Search, Share2, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const DashboardFile = () => {
   const dispatch = useDispatch();
   const { designs, loading } = useSelector((state) => state.design);
+  const { teams } = useSelector((state) => state.team);
+  const user = useSelector(selectUser);
   const [searchQuery, setSearchQuery] = useState("");
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [selectedDesign, setSelectedDesign] = useState(null);
+  const [selectedTeam, setSelectedTeam] = useState("");
 
   useEffect(() => {
     dispatch(getMyDesigns(searchQuery));
+    dispatch(fetchUserTeams());
   }, [dispatch, searchQuery]);
 
   const handleDelete = (id) => {
@@ -30,92 +42,22 @@ const DashboardFile = () => {
     setSearchQuery(e.target.value);
   };
 
-  const handleShare = async (design) => {
-    const shareUrl = `${window.location.origin}/dashboard/editor/${design._id}`;
-    const shareText = `Check out my design: ${design.title}`;
-    const shareImage = design.thumbnailUrl.secure_url;
+  const handleShare = (design) => {
+    setSelectedDesign(design);
+    setShareDialogOpen(true);
+  };
 
-    // Try Web Share API first
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: design.title,
-          text: shareText,
-          url: shareUrl,
-        });
-        return;
-      } catch (error) {
-        console.log('Error sharing:', error);
-      }
+  const handleTeamShare = async () => {
+    if (!selectedTeam || !selectedDesign) return;
+
+    try {
+      await dispatch(shareDesignWithTeam({ id: selectedDesign._id, teamId: selectedTeam })).unwrap();
+      toast.success("Design shared with team successfully!");
+      setShareDialogOpen(false);
+      setSelectedTeam("");
+    } catch (error) {
+      toast.error(error.message || "Failed to share design");
     }
-
-    // Fallback: Create a share menu with social platforms
-    const shareOptions = [
-      {
-        name: 'WhatsApp',
-        url: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`
-      },
-      {
-        name: 'Facebook',
-        url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`
-      },
-      {
-        name: 'Twitter',
-        url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
-      },
-      {
-        name: 'LinkedIn',
-        url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
-      },
-      {
-        name: 'Copy Link',
-        action: () => {
-          navigator.clipboard.writeText(shareUrl);
-          alert('Link copied to clipboard!');
-        }
-      }
-    ];
-
-    // Create a simple share menu
-    const shareMenu = document.createElement('div');
-    shareMenu.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-    shareMenu.innerHTML = `
-      <div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
-        <h3 class="text-lg font-semibold mb-4">Share "${design.title}"</h3>
-        <div class="space-y-2">
-          ${shareOptions.map(option => `
-            <button class="share-option w-full text-left p-3 rounded hover:bg-gray-100 transition-colors" data-name="${option.name}">
-              ${option.name}
-            </button>
-          `).join('')}
-        </div>
-        <button class="cancel-share mt-4 w-full p-2 text-gray-600 hover:bg-gray-100 rounded transition-colors">
-          Cancel
-        </button>
-      </div>
-    `;
-
-    document.body.appendChild(shareMenu);
-
-    // Add event listeners
-    shareMenu.addEventListener('click', (e) => {
-      if (e.target.classList.contains('cancel-share') || e.target === shareMenu) {
-        document.body.removeChild(shareMenu);
-        return;
-      }
-
-      const optionName = e.target.dataset.name;
-      const option = shareOptions.find(opt => opt.name === optionName);
-      
-      if (option) {
-        if (option.action) {
-          option.action();
-        } else {
-          window.open(option.url, '_blank', 'noopener,noreferrer');
-        }
-        document.body.removeChild(shareMenu);
-      }
-    });
   };
 
   if (loading && designs.length === 0) {
@@ -137,6 +79,38 @@ const DashboardFile = () => {
           className="pl-10 w-full md:max-w-md"
         />
       </div>
+
+      {/* Share Dialog */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Share Design</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>Share "{selectedDesign?.title}" with a team:</p>
+            <Select value={selectedTeam} onValueChange={setSelectedTeam}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                {teams.map((team) => (
+                  <SelectItem key={team.team._id} value={team.team._id}>
+                    {team.team.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShareDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleTeamShare} disabled={!selectedTeam}>
+                Share
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       
       {designs.length === 0 ? (
         <div className="text-center py-20">
@@ -186,9 +160,9 @@ const DashboardFile = () => {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleShare(design)}
-                      title="Share design"
+                      title="Share with team"
                     >
-                      <Share2 className="h-4 w-4" />
+                      <Users className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"

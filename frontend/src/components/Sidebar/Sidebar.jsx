@@ -49,7 +49,7 @@ const Sidebar = ({ onClose }) => {
           to="/"
           className="text-2xl font-bold text-foreground tracking-wide"
         >
-          Matty
+          Matty AI
         </Link>
         <Button
           variant="ghost"

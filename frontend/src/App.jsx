@@ -46,6 +46,9 @@ const AdminUsers = lazy(() => import("./pages/DashboardPages/AdminUsers"));
 const AdminModeration = lazy(() => import("./pages/DashboardPages/AdminModeration"));
 const AdminTemplates = lazy(() => import("./pages/DashboardPages/AdminTemplates"));
 const AdminPayments = lazy(() => import("./pages/DashboardPages/AdminPayments"));
+const TeamsPage = lazy(() => import("./pages/DashboardPages/TeamsPage"));
+const TeamInvitationPage = lazy(() => import("./pages/DashboardPages/TeamInvitationPage"));
+const TeamSharedDesignsPage = lazy(() => import("./pages/DashboardPages/TeamSharedDesignsPage"));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -123,6 +126,9 @@ const App = () => {
           <Route path="admin/moderation" element={<AdminModeration />} />
           <Route path="admin/templates" element={<AdminTemplates />} />
           <Route path="admin/payments" element={<AdminPayments />} />
+          <Route path="teams" element={<TeamsPage />} />
+          <Route path="teams/invite/:token" element={<TeamInvitationPage />} />
+          <Route path="team/:teamId/shared-designs" element={<TeamSharedDesignsPage />} />
           {/* Add other dashboard routes here */}
         </Route>
 

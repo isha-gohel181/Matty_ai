@@ -39,7 +39,7 @@ api.interceptors.response.use(
         // Try to refresh token
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
-          const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/v1/users/refresh-token`, {
+          const response = await api.post('/api/v1/users/refresh-token', {
             refreshToken
           });
 

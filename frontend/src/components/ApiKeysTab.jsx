@@ -116,7 +116,7 @@ const ApiKeysTab = () => {
             <DialogHeader>
               <DialogTitle>Generate New API Key</DialogTitle>
               <DialogDescription>
-                Create a new API key to access Matty-AI features from external applications.
+                Create a new API key to access Matty AI features from external applications.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -251,7 +251,7 @@ const ApiKeysTab = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">API Documentation</CardTitle>
-          <CardDescription>Complete guide to integrate Matty-AI into your applications</CardDescription>
+          <CardDescription>Complete guide to integrate Matty AI into your applications</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Base URL */}

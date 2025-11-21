@@ -39,7 +39,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <Link to="/" className="text-2xl font-bold text-foreground tracking-wide mb-4 inline-block">
-              Matty
+              Matty AI
             </Link>
             <p className="text-muted-foreground text-sm mb-4 max-w-sm">
               Transform your ideas into stunning designs with AI-powered tools. 
@@ -84,7 +84,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Matty. All rights reserved.
+              &copy; {new Date().getFullYear()} Matty AI. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">

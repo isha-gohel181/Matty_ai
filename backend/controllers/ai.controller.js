@@ -96,8 +96,8 @@ if (process.env.GEMINI_API_KEY) {
   console.warn('GEMINI_API_KEY not found. AI features will not work.');
 }
 
-export const getDesignSuggestions = asyncHandler(async (req, res, next) => {
-  const { prompt } = req.body;
+const getDesignSuggestions = asyncHandler(async (req, res, next) => {
+  const { prompt, generateTemplate = false } = req.body;
 
   if (!prompt) {
     return next(new ErrorHandler("Prompt is required", 400));
@@ -116,18 +116,41 @@ export const getDesignSuggestions = asyncHandler(async (req, res, next) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-    const fullPrompt = `
-      You are a design assistant for a graphic design application. 
-      A user has provided the following prompt for a new design: "${prompt}".
+    let fullPrompt;
+    let includeTemplate = generateTemplate;
 
-      Based on this prompt, provide design suggestions in a structured JSON format. 
-      The JSON object should have the following keys:
-      - "palette": An array of 3-5 hex color codes that would work well together.
-      - "fonts": An object with "heading" and "body" keys, suggesting appropriate font families (e.g., "Montserrat", "Lato").
-      - "layout": A brief, one-sentence description of a suggested layout (e.g., "A large, centered image with a bold title at the top and contact information at the bottom.").
+    if (includeTemplate) {
+      fullPrompt = `
+        You are a design assistant for a graphic design application.
+        A user has provided the following prompt for a new design: "${prompt}".
 
-      Do not include any other text or formatting in your response.
-    `;
+        Generate a complete design package including:
+        1. Design suggestions (palette, fonts, layout)
+        2. A complete Excalidraw JSON template that implements the design
+
+        For the design suggestions, provide in JSON format with keys:
+        - "palette": An array of 3-5 hex color codes
+        - "fonts": An object with "heading" and "body" keys
+        - "layout": A brief description
+
+        For the template, provide "excalidrawJSON" with valid Excalidraw format including elements that match the design.
+
+        Return everything in a single JSON object with "suggestions" and "template" keys.
+      `;
+    } else {
+      fullPrompt = `
+        You are a design assistant for a graphic design application.
+        A user has provided the following prompt for a new design: "${prompt}".
+
+        Based on this prompt, provide design suggestions in a structured JSON format.
+        The JSON object should have the following keys:
+        - "palette": An array of 3-5 hex color codes that would work well together.
+        - "fonts": An object with "heading" and "body" keys, suggesting appropriate font families (e.g., "Montserrat", "Lato").
+        - "layout": A brief, one-sentence description of a suggested layout (e.g., "A large, centered image with a bold title at the top and contact information at the bottom.").
+
+        Do not include any other text or formatting in your response.
+      `;
+    }
 
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
@@ -136,11 +159,17 @@ export const getDesignSuggestions = asyncHandler(async (req, res, next) => {
     // Clean up the response to ensure it's valid JSON
     const jsonResponse = JSON.parse(text.replace(/```json/g, "").replace(/```/g, ""));
 
-    res.status(200).json({
+    let responseData = {
       success: true,
-      suggestions: jsonResponse,
+      suggestions: includeTemplate ? jsonResponse.suggestions : jsonResponse,
       remainingRequests: usageCheck.remaining
-    });
+    };
+
+    if (includeTemplate && jsonResponse.template) {
+      responseData.template = jsonResponse.template;
+    }
+
+    res.status(200).json(responseData);
 
     // Increment usage after successful response
     await incrementUsage(req.user._id, 'aiSuggestions');
@@ -150,7 +179,7 @@ export const getDesignSuggestions = asyncHandler(async (req, res, next) => {
   }
 });
 
-export const generateColorPalette = asyncHandler(async (req, res, next) => {
+const generateColorPalette = asyncHandler(async (req, res, next) => {
   const imageLocalPath = req.file?.path;
 
   if (!imageLocalPath) {
@@ -220,3 +249,74 @@ export const generateColorPalette = asyncHandler(async (req, res, next) => {
     return next(new ErrorHandler("Failed to generate color palette", 500));
   }
 });
+
+const generateTemplateData = asyncHandler(async (req, res, next) => {
+  const { description } = req.body;
+
+  if (!description) {
+    return next(new ErrorHandler("Description is required", 400));
+  }
+
+  if (!genAI) {
+    return next(new ErrorHandler("AI service is not configured. Please add GEMINI_API_KEY to environment variables.", 503));
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const fullPrompt = `
+      You are an expert graphic designer and template creator for a design application using Excalidraw.
+
+      A user wants to create a template based on this description: "${description}"
+
+      Generate a complete template data in JSON format with the following structure:
+      {
+        "title": "A catchy, descriptive title for the template",
+        "category": "One of: General, Business, Education, Creative",
+        "tags": ["tag1", "tag2", "tag3"], // Array of relevant tags
+        "excalidrawJSON": {
+          "type": "excalidraw",
+          "version": 2,
+          "source": "https://excalidraw.com",
+          "elements": [
+            // Array of Excalidraw elements (shapes, text, images, etc.)
+            // Create a meaningful design with multiple elements based on the description
+            // Include at least 3-5 elements like rectangles, text, arrows, etc.
+            // Use appropriate colors, positions, and properties
+          ],
+          "appState": {
+            "gridSize": null,
+            "viewBackgroundColor": "#ffffff"
+          },
+          "files": {}
+        }
+      }
+
+      Make sure the excalidrawJSON is valid and contains elements that represent the described design.
+      For text elements, use appropriate font sizes and positions.
+      For shapes, use colors that fit the theme.
+      Do not include any other text or formatting in your response.
+    `;
+
+    const result = await model.generateContent(fullPrompt);
+    const response = await result.response;
+    const text = await response.text();
+
+    // Clean up the response to ensure it's valid JSON
+    const jsonResponse = JSON.parse(text.replace(/```json/g, "").replace(/```/g, ""));
+
+    res.status(200).json({
+      success: true,
+      templateData: jsonResponse
+    });
+  } catch (error) {
+    console.error("Error generating template data:", error);
+    return next(new ErrorHandler("Failed to generate template data", 500));
+  }
+});
+
+export {
+  getDesignSuggestions,
+  generateColorPalette,
+  generateTemplateData
+};

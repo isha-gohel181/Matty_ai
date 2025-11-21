@@ -9,6 +9,7 @@ import favoriteReducer from "../slice/favorite/favorite.slice.js";
 import analyticsReducer from "../slice/analytics/analytics.slice.js";
 import aiReducer from "../slice/ai/ai.slice.js";
 import apiKeyReducer from "../slice/apiKey/apiKey.slice.js";
+import teamReducer from "../slice/team/teamSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
     analytics: analyticsReducer,
     ai: aiReducer,
     apiKey: apiKeyReducer,
+    team: teamReducer,
   },
 });

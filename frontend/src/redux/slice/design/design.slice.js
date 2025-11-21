@@ -71,6 +71,42 @@ export const deleteDesign = createAsyncThunk(
   }
 );
 
+export const shareDesignWithTeam = createAsyncThunk(
+  "design/shareWithTeam",
+  async ({ id, teamId }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/api/v1/designs/${id}/share`, { teamId });
+      return response.data.design;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: error.message });
+    }
+  }
+);
+
+export const updateDesignVisibility = createAsyncThunk(
+  "design/updateVisibility",
+  async ({ id, visibility, sharedWith }, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`/api/v1/designs/${id}/visibility`, { visibility, sharedWith });
+      return response.data.design;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: error.message });
+    }
+  }
+);
+
+export const getTeamSharedDesigns = createAsyncThunk(
+  "design/getTeamSharedDesigns",
+  async (teamId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/api/v1/designs/team/${teamId}`);
+      return response.data.designs;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: error.message });
+    }
+  }
+);
+
 
 const initialState = {
   designs: [],
@@ -154,6 +190,52 @@ const designSlice = createSlice({
         state.designs = state.designs.filter((d) => d._id !== action.payload);
       })
       .addCase(deleteDesign.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Share Design with Team
+      .addCase(shareDesignWithTeam.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(shareDesignWithTeam.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.designs.findIndex(
+          (d) => d._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.designs[index] = action.payload;
+        }
+      })
+      .addCase(shareDesignWithTeam.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Update Design Visibility
+      .addCase(updateDesignVisibility.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateDesignVisibility.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.designs.findIndex(
+          (d) => d._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.designs[index] = action.payload;
+        }
+      })
+      .addCase(updateDesignVisibility.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Get Team Shared Designs
+      .addCase(getTeamSharedDesigns.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getTeamSharedDesigns.fulfilled, (state, action) => {
+        state.loading = false;
+        state.designs = action.payload;
+      })
+      .addCase(getTeamSharedDesigns.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

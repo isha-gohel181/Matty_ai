@@ -32,6 +32,15 @@ const designSchema = new Schema(
       trim: true,
       maxlength: [30, "Tag cannot be more than 30 characters."],
     }],
+    visibility: {
+      type: String,
+      enum: ["private", "team", "public"],
+      default: "private",
+    },
+    sharedWith: [{
+      type: Schema.Types.ObjectId,
+      ref: "Team",
+    }],
   },
   { timestamps: true }
 );

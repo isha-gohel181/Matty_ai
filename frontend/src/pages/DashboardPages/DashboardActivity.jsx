@@ -79,10 +79,8 @@ const DashboardActivity = () => {
 
   if (myActivitiesLoading) {
     return (
-      <div className="p-4 md:p-8">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        </div>
+      <div className="flex items-center justify-center h-full">
+        <p>Loading activity...</p>
       </div>
     );
   }
@@ -137,7 +135,7 @@ const DashboardActivity = () => {
               <Card className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <div className="p-2 bg-gray-50 rounded-full">
                         {getActivityIcon(activity.action)}
                       </div>

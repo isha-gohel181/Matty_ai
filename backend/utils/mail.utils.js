@@ -23,14 +23,14 @@ export const sendEmail = async ({ email, subject, message }) => {
 
 
     const options = {
-        from: `"Zidio" <${process.env.SMTP_MAIL}>`,
+        from: `"Matty AI" <${process.env.SMTP_MAIL}>`,
         to: email,
         subject,
         html: message,
         headers: {
             "X-Priority": "3",
             "X-Mailer": "Nodemailer",
-            "List-Unsubscribe": `<mailto:zidio@gmail.com>`, // Helps email providers understand user preferences
+            "List-Unsubscribe": `<mailto:${process.env.SMTP_MAIL}>`,
         },
     }
 

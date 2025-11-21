@@ -1,6 +1,7 @@
 // frontend/src/redux/slice/image/image.slice.js
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from '../../../utils/api.js';
 
 export const uploadImage = createAsyncThunk(
   "image/upload",
@@ -9,22 +10,15 @@ export const uploadImage = createAsyncThunk(
       const formData = new FormData();
       formData.append("image", imageData);
 
-      // Explicit backend URL for better proxy handling
-      const response = await fetch("http://localhost:3000/api/v1/images/upload", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
+      const response = await api.post('/api/v1/images/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      const data = await response.json();
-      if (!response.ok) return rejectWithValue(data);
-      return data;
+      return response.data;
     } catch (error) {
-      // Enhanced error handling
-      console.error("Image upload fetch error:", error);
-      return rejectWithValue({
-        message: "Cannot connect to server. Is the backend running?",
-      });
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );

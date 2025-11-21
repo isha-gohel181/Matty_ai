@@ -653,7 +653,10 @@ const updateUserAvatar = asyncHandler(async (req, res, next) => {
 // *User DashBoard - just getting the loggedIn Info of user
 const getLoggedInUserInfo = asyncHandler(async (req, res, next) => {
     console.log("Over here")
-    const user = await User.findById(req.user._id).select("-password -refreshToken")
+    const user = await User.findById(req.user._id).select("-password -refreshToken").populate({
+        path: "teams.team",
+        select: "name description members owner"
+    })
 
     res.status(200).json({
         success: true,

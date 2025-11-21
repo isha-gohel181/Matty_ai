@@ -3,10 +3,10 @@ import api from '../../../utils/api.js';
 
 export const getDesignSuggestions = createAsyncThunk(
   'ai/getDesignSuggestions',
-  async (prompt, { rejectWithValue }) => {
+  async ({ prompt, generateTemplate = false }, { rejectWithValue }) => {
     try {
-      const response = await api.post('/api/v1/ai/suggestions', { prompt });
-      return response.data.suggestions;
+      const response = await api.post('/api/v1/ai/suggestions', { prompt, generateTemplate });
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: error.message });
     }
@@ -36,6 +36,7 @@ export const generateColorPalette = createAsyncThunk(
 const initialState = {
   suggestions: null,
   palette: null,
+  template: null,
   loading: false,
   error: null,
 };
@@ -46,10 +47,15 @@ const aiSlice = createSlice({
   reducers: {
     clearSuggestions: (state) => {
       state.suggestions = null;
+      state.template = null;
       state.error = null;
     },
     clearPalette: (state) => {
       state.palette = null;
+      state.error = null;
+    },
+    clearTemplate: (state) => {
+      state.template = null;
       state.error = null;
     },
   },
@@ -61,7 +67,8 @@ const aiSlice = createSlice({
       })
       .addCase(getDesignSuggestions.fulfilled, (state, action) => {
         state.loading = false;
-        state.suggestions = action.payload;
+        state.suggestions = action.payload.suggestions;
+        state.template = action.payload.template || null;
       })
       .addCase(getDesignSuggestions.rejected, (state, action) => {
         state.loading = false;
@@ -82,6 +89,6 @@ const aiSlice = createSlice({
   },
 });
 
-export const { clearSuggestions, clearPalette } = aiSlice.actions;
+export const { clearSuggestions, clearPalette, clearTemplate } = aiSlice.actions;
 
 export default aiSlice.reducer;

@@ -14,7 +14,6 @@ import {
   Trash2,
   Download,
   FileText,
-  Upload,
   Sparkles,
   Palette,
   Bot,
@@ -28,7 +27,6 @@ import {
   clearCurrentDesign,
 } from "@/redux/slice/design/design.slice";
 import { getTemplateById, clearCurrentTemplate } from "@/redux/slice/template/template.slice";
-import { uploadImage } from "@/redux/slice/image/image.slice";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import {
   DropdownMenu,
@@ -36,7 +34,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import imageCompression from "browser-image-compression";
 import { exportToPdf } from "@/lib/export";
 import { useTheme } from "@/context/ThemeContext.jsx";
 import AiSuggestions from "./AiSuggestions";
@@ -51,14 +48,10 @@ const Editor = () => {
     (state) => state.design
   );
   const { currentTemplate } = useSelector((state) => state.template);
-  const { imageUrl, loading: imageLoading, error: imageError } = useSelector(
-    (state) => state.image
-  );
 
   const { theme } = useTheme();
 
   const excalidrawRef = useRef(null);
-  const fileInputRef = useRef(null);
 
   const [title, setTitle] = useState("Untitled Design");
   const [elements, setElements] = useState([]);
@@ -145,38 +138,6 @@ const Editor = () => {
     };
   }, [autoSave, elements, title]);
 
-  // 🟨 Handle Image Upload
-  const handleImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-    };
-
-    try {
-      const compressedFile = await imageCompression(file, options);
-      dispatch(uploadImage(compressedFile)).then((action) => {
-        if (uploadImage.fulfilled.match(action)) {
-          const imageUrl = action.payload.imageUrl;
-          const imageElement = {
-            type: "image",
-            x: 100,
-            y: 100,
-            width: 500,
-            height: 500,
-            fileId: imageUrl,
-          };
-          setElements((prev) => [...prev, imageElement]);
-        }
-      });
-    } catch (error) {
-      console.error("Error compressing image:", error);
-    }
-  };
-
   // 🟩 Save / Update Design
   const handleSave = async () => {
     try {
@@ -235,6 +196,44 @@ const Editor = () => {
     }
   };
 
+  const handleApplyTemplate = (templateData) => {
+    try {
+      let loadedData = templateData.excalidrawJSON;
+      
+      // Handle string JSON that needs parsing
+      if (typeof loadedData === 'string') {
+        loadedData = JSON.parse(loadedData);
+      }
+      
+      // Extract elements from the Excalidraw state object
+      let loadedElements = loadedData;
+      if (loadedData && typeof loadedData === 'object' && !Array.isArray(loadedData)) {
+        // If it's an object with an 'elements' property, extract it
+        if (loadedData.elements && Array.isArray(loadedData.elements)) {
+          loadedElements = loadedData.elements;
+        } else {
+          console.warn('Could not find elements array in AI template data:', loadedData);
+          loadedElements = [];
+        }
+      }
+      
+      // Ensure it's an array
+      if (!Array.isArray(loadedElements)) {
+        console.warn('Loaded elements is not an array:', loadedElements);
+        loadedElements = [];
+      }
+      
+      setElements(loadedElements);
+      setTitle(templateData.title || "AI Generated Design");
+      setKey((prev) => prev + 1);
+      
+      // Close AI suggestions panel
+      setShowAiSuggestions(false);
+    } catch (error) {
+      console.error('Error applying AI template:', error);
+    }
+  };
+
   const initialData = {
     elements,
     appState: { gridSize: null },
@@ -246,7 +245,6 @@ const Editor = () => {
         <Input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full md:w-1/3" />
 
         {error && <p className="text-red-500 text-sm">{error.message || JSON.stringify(error)}</p>}
-        {imageError && <p className="text-red-500 text-sm">{imageError.message || JSON.stringify(imageError)}</p>}
 
         <div className="grow" />
 
@@ -259,13 +257,6 @@ const Editor = () => {
           />
           <label htmlFor="autoSave" className="text-sm">Auto-Save</label>
         </div> */}
-
-        <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" style={{ display: "none" }} />
-
-        <Button size="sm" variant="outline" onClick={() => fileInputRef.current.click()} disabled={imageLoading}>
-          <Upload className="mr-2 h-4 w-4" />
-          {imageLoading ? "Uploading..." : "Upload Image"}
-        </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -356,7 +347,7 @@ const Editor = () => {
             <WelcomeScreen.Hints.HelpHint />
           </WelcomeScreen>
         </Excalidraw>
-        {showAiSuggestions && <AiSuggestions />}
+        {showAiSuggestions && <AiSuggestions onApplyTemplate={handleApplyTemplate} />}
         {showColorPalette && <ColorPalette />}
       </div>
     </div>

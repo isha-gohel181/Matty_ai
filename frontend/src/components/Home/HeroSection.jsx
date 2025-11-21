@@ -55,7 +55,7 @@ const HeroSection = () => {
           One Tool, Infinite Creativity.
         </h1>
         <p className="max-w-xl text-lg text-muted-foreground sm:text-xl">
-          Matty is your AI-powered design partner for creating stunning posters,
+          Matty AI is your design partner for creating stunning posters,
           banners, and social media graphics in minutes.
         </p>
         <div className="pointer-events-auto">
