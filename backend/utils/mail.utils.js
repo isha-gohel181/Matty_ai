@@ -21,21 +21,24 @@ const sendEmailWithRetry = async (sendFn, maxRetries = 3) => {
 
 export const sendEmail = async ({ email, subject, message }) => {
     // Validate required environment variables
-    if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_MAIL || !process.env.SMTP_PASSWORD) {
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_MAIL) {
         throw new Error("SMTP configuration is missing. Please check your .env file.");
     }
 
     console.log("📧 Using Brevo SMTP for email delivery");
 
     // Create transporter with Brevo SMTP configuration
+    // Using Brevo's SMTP relay which works better on cloud platforms
     const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT),
-        secure: true, // true for 465, false for other ports
+        host: "smtp-relay.brevo.com",
+        port: 587, // Use 587 for TLS (more compatible with cloud platforms)
+        secure: false, // false for TLS, true only for 465
         auth: {
-            user: process.env.SMTP_MAIL,
+            user: process.env.SMTP_USER,  // Use SMTP_USER for authentication
             pass: process.env.SMTP_PASSWORD,
         },
+        logger: true, // Enable logging for debugging
+        debug: true
     });
 
     try {
@@ -52,6 +55,8 @@ export const sendEmail = async ({ email, subject, message }) => {
 
     } catch (error) {
         console.error("❌ Error sending email:", error.message || error);
+        console.error("📍 Error code:", error.code);
+        console.error("📍 Error response:", error.response);
         const errorMessage = error.message || "Unknown error";
         throw new Error(`Failed to send email: ${errorMessage}`);
     }
