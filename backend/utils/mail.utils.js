@@ -2,26 +2,29 @@ import nodeMailer from "nodemailer"
 
 import fs from "fs";
 
+// Helper function to send email with retry logic
+const sendEmailWithRetry = async (transporter, options, maxRetries = 3) => {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            await transporter.sendMail(options);
+            return true;
+        } catch (error) {
+            if (i < maxRetries - 1) {
+                console.log(`📧 Email send attempt ${i + 1} failed, retrying...`);
+                // Wait before retrying (exponential backoff)
+                await new Promise(resolve => setTimeout(resolve, 2000 * (i + 1)));
+            } else {
+                throw error;
+            }
+        }
+    }
+};
 
 export const sendEmail = async ({ email, subject, message }) => {
-
-    const transporter = nodeMailer.createTransport({
-        host: process.env.SMTP_HOST,
-        // service: process.env.SMTP_SERVICE,
-        port: process.env.SMTP_PORT,
-        secure: true,
-        auth: {
-            user: process.env.SMTP_MAIL,
-            pass: process.env.SMTP_PASSWORD,
-        },
-        // dkim: {
-        //     domainName: "greedhunter.com", // Your domain name
-        //     keySelector: "default", // Match this with your DKIM setup in Hostinger
-        //     privateKey: process.env.DKIM_PRIVATE_KEY, // Add your DKIM private key here
-        //   },
-    })
-
-
+    // Use Brevo SMTP for production reliability
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    let transporter;
     const options = {
         from: `"Matty AI" <${process.env.SMTP_MAIL}>`,
         to: email,
@@ -32,14 +35,45 @@ export const sendEmail = async ({ email, subject, message }) => {
             "X-Mailer": "Nodemailer",
             "List-Unsubscribe": `<mailto:${process.env.SMTP_MAIL}>`,
         },
-    }
+    };
 
     try {
-        await transporter.sendMail(options);
-        console.log(`✅ Email sent successfully to ${email}`);
-    } catch (error) {
-        console.error("❌ Error sending email:", error.response);
-        throw new Error(`Failed to send email ${error.message || error.response || error || "...!?"}`);
-    }
+        if (isProduction && process.env.BREVO_SMTP_KEY) {
+            // Use Brevo for production (more reliable on Render)
+            transporter = nodeMailer.createTransport({
+                host: "smtp-relay.brevo.com",
+                port: 587,
+                secure: false,
+                auth: {
+                    user: process.env.SMTP_MAIL,
+                    pass: process.env.BREVO_SMTP_KEY,
+                },
+                connectionTimeout: 10000,
+                socketTimeout: 10000,
+            });
+            console.log("📧 Using Brevo SMTP for email delivery (production)");
+        } else {
+            // Use Gmail for development
+            transporter = nodeMailer.createTransport({
+                host: process.env.SMTP_HOST,
+                port: process.env.SMTP_PORT,
+                secure: true,
+                auth: {
+                    user: process.env.SMTP_MAIL,
+                    pass: process.env.SMTP_PASSWORD,
+                },
+                connectionTimeout: 5000,
+                socketTimeout: 5000,
+            });
+            console.log("📧 Using Gmail SMTP for email delivery (development)");
+        }
 
+        // Send email with retry logic
+        await sendEmailWithRetry(transporter, options);
+        console.log(`✅ Email sent successfully to ${email}`);
+
+    } catch (error) {
+        console.error("❌ Error sending email:", error.message || error);
+        throw new Error(`Failed to send email: ${error.message || "Unknown error"}`);
+    }
 }
