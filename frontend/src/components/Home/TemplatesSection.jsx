@@ -45,7 +45,7 @@ const TemplatesSection = () => {
     return (
         <section id="templates" className="py-20 sm:py-32">
             <div className="mx-auto max-w-7xl px-4">
-                <h2 className="text-center text-4xl font-bold text-foreground">Kickstart Your Creativity</h2>
+                <h2 className="text-center text-3xl sm:text-4xl font-bold text-foreground">Kickstart Your Creativity</h2>
                 <p className="text-center mt-4 text-muted-foreground">Explore templates for every need.</p>
 
                 {loading && (

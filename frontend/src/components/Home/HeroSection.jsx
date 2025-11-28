@@ -54,14 +54,14 @@ const HeroSection = () => {
         <h1 className="text-5xl font-extrabold tracking-tighter sm:text-6xl md:text-7xl text-foreground">
           One Tool, Infinite Creativity.
         </h1>
-        <p className="max-w-xl text-lg text-muted-foreground sm:text-xl">
+        <p className="max-w-xl text-base text-muted-foreground sm:text-xl">
           Matty AI is your design partner for creating stunning posters,
           banners, and social media graphics in minutes.
         </p>
         <div className="pointer-events-auto">
           <Button
             size="lg"
-            className="rounded-full bg-white text-black px-8 py-6 text-lg font-semibold hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl"
+            className="rounded-full bg-white text-black px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-semibold hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl"
             onClick={() => navigate(isAuthenticated ? '/dashboard/editor' : '/signup')}
           >
             {isAuthenticated ? 'Go to Dashboard' : 'Start Designing for Free'}

@@ -98,7 +98,7 @@ const HowItWorksSection = () => {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-4">
+        <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-6 lg:gap-4">
           {steps.map((step, index) => (
             <Card 
               key={index}

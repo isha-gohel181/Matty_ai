@@ -50,7 +50,7 @@ const FeaturesSection = () => {
 
       <div className="mx-auto max-w-screen-xl px-4">
 
-        <h2 className="text-center text-4xl font-bold text-foreground">Everything You Need to Create</h2>
+        <h2 className="text-center text-3xl sm:text-4xl font-bold text-foreground">Everything You Need to Create</h2>
 
         <div className="mt-16">
 

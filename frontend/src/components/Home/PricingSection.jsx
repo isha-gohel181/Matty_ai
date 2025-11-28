@@ -129,9 +129,9 @@ const PricingSection = () => {
                 )}
 
                 <CardHeader className="text-center pb-8">
-                  <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                  <CardTitle className="text-xl sm:text-2xl font-bold">{plan.name}</CardTitle>
                   <div className="mt-6">
-                    <span className="text-5xl font-bold bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    <span className="text-4xl sm:text-5xl font-bold bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
                       {plan.price}
                     </span>
                     <span className="text-muted-foreground text-lg">/{plan.period}</span>

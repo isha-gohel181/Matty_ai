@@ -84,15 +84,15 @@ const CallToAction = () => {
           
           {/* Content */}
           <div className="relative z-10">
-            <h2 className="text-4xl font-bold text-foreground">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
               Ready to Unlock Premium Features?
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground mb-8">
+            <p className="mt-4 text-base sm:text-lg text-muted-foreground mb-8">
               Get unlimited AI suggestions, access all templates, and more with our Pro plans.
             </p>
             <Button 
               size="lg" 
-              className="mt-8 rounded-full px-8 py-6 text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="mt-8 rounded-full px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={() => navigate(isAuthenticated ? '/dashboard/payment?plan=pro-monthly' : '/#pricing')}
             >
               {isAuthenticated ? 'Upgrade to Pro' : 'View Pricing Plans'}

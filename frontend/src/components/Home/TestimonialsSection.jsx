@@ -42,7 +42,7 @@ const testimonials = [
 
 const TestimonialCard = ({ quote, name, title, avatar }) => {
   return (
-    <div className="relative w-80 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 p-6 flex flex-col shadow-lg">
+    <div className="relative w-full max-w-sm sm:max-w-md md:w-80 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 p-6 flex flex-col shadow-lg">
       <p className="text-gray-300 text-sm grow mb-4 leading-relaxed">"{quote}"</p>
       <div className="flex items-center gap-3">
         <Avatar className="h-10 w-10 ring-2 ring-white/20">
@@ -65,7 +65,7 @@ const TestimonialsSection = () => {
   return (
     <section id="testimonials" className="py-20 sm:py-32">
       <div className="mx-auto max-w-7xl px-4">
-        <h2 className="text-center text-4xl font-bold text-foreground">Loved by Creators Worldwide</h2>
+        <h2 className="text-center text-3xl sm:text-4xl font-bold text-foreground">Loved by Creators Worldwide</h2>
         <p className="text-center mt-4 text-muted-foreground mb-12">See what our users are saying about Matty.</p>
         
         <div className="relative flex flex-col items-center justify-center overflow-hidden">
@@ -74,7 +74,7 @@ const TestimonialsSection = () => {
               <TestimonialCard key={index} {...testimonial} />
             ))}
           </Marquee>
-          <Marquee reverse pauseOnHover className="[--duration:40s] mt-4">
+          <Marquee reverse pauseOnHover className="[--duration:40s] mt-6 sm:mt-4">
             {secondRow.map((testimonial, index) => (
               <TestimonialCard key={index} {...testimonial} />
             ))}
