@@ -37,13 +37,23 @@ export const createTeam = asyncHandler(async (req, res, next) => {
 export const getUserTeams = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
 
-  const user = await User.findById(userId).populate({
-    path: "teams.team",
-    populate: {
-      path: "members.user",
-      select: "fullName email avatar",
-    },
-  });
+  const user = await User.findById(userId)
+    .populate({
+      path: "teams.team",
+      select: "name description owner members",
+      populate: {
+        path: "members.user",
+        select: "fullName email avatar",
+        options: { lean: true }
+      },
+      options: { lean: true }
+    })
+    .lean()
+    .timeout(5000);
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
 
   res.status(200).json({
     success: true,

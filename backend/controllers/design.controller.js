@@ -66,7 +66,11 @@ const createDesign = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/designs
 // @access  Private
 const getMyDesigns = asyncHandler(async (req, res, next) => {
-  const { search } = req.query;
+  const { search, page = 1, limit = 20 } = req.query;
+  const pageNum = Math.max(1, parseInt(page) || 1);
+  const limitNum = Math.min(100, parseInt(limit) || 20); // Max 100 items per page
+  const skip = (pageNum - 1) * limitNum;
+
   let query = {
     $or: [
       { user: req.user._id },
@@ -80,18 +84,32 @@ const getMyDesigns = asyncHandler(async (req, res, next) => {
     query.$and.push({
       $or: [
         { title: { $regex: search, $options: 'i' } },
-        { tags: { $in: [new RegExp(search, 'i')] } }
+        { tags: { $regex: search, $options: 'i' } }
       ]
     });
   }
 
-  const designs = await Design.find(query).populate('user', 'fullName').sort({
-    updatedAt: -1,
-  });
+  const [designs, total] = await Promise.all([
+    Design.find(query)
+      .select('user title visibility tags thumbnailUrl createdAt updatedAt')
+      .populate('user', 'fullName avatar')
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .lean()
+      .timeout(5000),
+    Design.countDocuments(query)
+  ]);
 
   res.status(200).json({
     success: true,
     designs,
+    pagination: {
+      total,
+      page: pageNum,
+      limit: limitNum,
+      pages: Math.ceil(total / limitNum)
+    }
   });
 });
 

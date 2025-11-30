@@ -59,9 +59,20 @@ const App = () => {
     // Check if user is already logged in
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
-      dispatch(getLoggedInUserInfo()).finally(() => {
+      // Set timeout to prevent indefinite loading - shows dashboard even if user data fails
+      const timeoutId = setTimeout(() => {
         setIsAppLoading(false);
-      });
+      }, 8000);
+
+      dispatch(getLoggedInUserInfo())
+        .finally(() => {
+          clearTimeout(timeoutId);
+          setIsAppLoading(false);
+        })
+        .catch(() => {
+          // Silently fail - user can still use app
+          setIsAppLoading(false);
+        });
     } else {
       setIsAppLoading(false);
     }

@@ -214,6 +214,12 @@ userSchema.methods.generateRefreshToken = function () {
 };
 
 
+// *Add database indexes for performance
+userSchema.index({ email: 1 });
+userSchema.index({ _id: 1 });
+userSchema.index({ 'teams.team': 1 });
+userSchema.index({ googleId: 1 });
+
 // * generate verificatoin code
 userSchema.methods.generateVerificationCode = function () {
     function generateCodeNumber() {

@@ -45,4 +45,10 @@ const designSchema = new Schema(
   { timestamps: true }
 );
 
+// Add indexes for frequently queried fields
+designSchema.index({ user: 1, updatedAt: -1 });
+designSchema.index({ visibility: 1 });
+designSchema.index({ sharedWith: 1 });
+designSchema.index({ title: 'text', tags: 'text' }); // For full text search
+
 export const Design = mongoose.model("Design", designSchema);

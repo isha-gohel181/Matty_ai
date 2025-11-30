@@ -8,14 +8,14 @@ const steps = [
     icon: <LayoutTemplate size={32} />,
     title: "Select a Template",
     description: "Choose from professionally designed templates or start with a blank canvas to kickstart your project.",
-    colors: [[125, 211, 252]], // Sky blue
+    colors: [[59, 130, 246]], // Blue
     containerClassName: "bg-black",
   },
   {
     icon: <Sparkles size={32} />,
     title: "Customize with AI",
     description: "Use our intuitive editor and AI-powered tools to bring your unique vision to life effortlessly.",
-    colors: [[236, 72, 153], [232, 121, 249]], // Pink to purple gradient
+    colors: [[236, 72, 153], [168, 85, 247]], // Pink to purple gradient
     containerClassName: "bg-black",
   },
   {
@@ -33,7 +33,7 @@ const Card = ({ title, icon, children, description }) => {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="border border-black/20 group/canvas-card flex items-center justify-center dark:border-white/20 max-w-xs w-full mx-auto p-3 relative h-80"
+      className="border border-black/20 group/canvas-card flex items-center justify-center dark:border-white/20 max-w-xs w-full mx-auto p-3 relative h-80 rounded-lg transition-all duration-300"
     >
       <div className="absolute h-6 w-6 -top-3 -left-3 dark:text-white text-black">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
@@ -61,7 +61,9 @@ const Card = ({ title, icon, children, description }) => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="h-full w-full absolute inset-0"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="h-full w-full absolute inset-0 rounded-lg overflow-hidden"
           >
             {children}
           </motion.div>
@@ -107,11 +109,11 @@ const HowItWorksSection = () => {
               description={step.description}
             >
               <CanvasRevealEffect
-                animationSpeed={1.5}
+                animationSpeed={2}
                 containerClassName={step.containerClassName}
                 colors={step.colors}
-                dotSize={2.5}
-                opacities={[0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.65]}
+                dotSize={3}
+                opacities={[0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8]}
               />
             </Card>
           ))}
