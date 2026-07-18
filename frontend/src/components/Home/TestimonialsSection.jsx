@@ -43,15 +43,15 @@ const testimonials = [
 const TestimonialCard = ({ quote, name, title, avatar }) => {
   return (
     <div className="relative w-full max-w-sm sm:max-w-md md:w-80 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 p-6 flex flex-col shadow-lg">
-      <p className="text-gray-300 text-sm grow mb-4 leading-relaxed">"{quote}"</p>
+      <p className="text-body-text text-sm font-editorial italic grow mb-4 leading-relaxed">"{quote}"</p>
       <div className="flex items-center gap-3">
         <Avatar className="h-10 w-10 ring-2 ring-white/20">
           <AvatarImage src={avatar} alt={name} />
           <AvatarFallback>{name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div>
-          <p className="font-semibold text-white text-sm">{name}</p>
-          <p className="text-xs text-gray-400">{title}</p>
+          <p className="font-semibold text-white text-xs font-utility uppercase tracking-widest">{name}</p>
+          <p className="text-[10px] text-muted-foreground font-utility uppercase tracking-widest mt-0.5">{title}</p>
         </div>
       </div>
     </div>
@@ -65,8 +65,8 @@ const TestimonialsSection = () => {
   return (
     <section id="testimonials" className="py-20 sm:py-32">
       <div className="mx-auto max-w-7xl px-4">
-        <h2 className="text-center text-3xl sm:text-4xl font-bold text-foreground">Loved by Creators Worldwide</h2>
-        <p className="text-center mt-4 text-muted-foreground mb-12">See what our users are saying about Matty.</p>
+        <h2 className="text-center text-3xl sm:text-5xl font-bold text-foreground font-display uppercase tracking-wider">Loved by Creators Worldwide</h2>
+        <p className="text-center mt-4 text-secondary-text font-editorial text-lg leading-relaxed max-w-xl mx-auto mb-12">See what our users are saying about Matty.</p>
         
         <div className="relative flex flex-col items-center justify-center overflow-hidden">
           <Marquee pauseOnHover className="[--duration:40s]">

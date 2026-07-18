@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { navigationItems } from "@/utils/navigationItems.utils.js";
+import logo from "@/assets/Mattty_ai_logo.png";
 import { selectUser, logoutUser } from "@/redux/slice/user/user.slice";
 import { useTheme } from "@/context/ThemeContext.jsx";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -47,9 +48,10 @@ const Sidebar = ({ onClose }) => {
       <div className="h-16 p-4 border-b flex items-center justify-between">
         <Link
           to="/"
-          className="text-2xl font-bold text-foreground tracking-wide"
+          className="flex items-center gap-2 text-2xl font-bold font-display uppercase tracking-wider text-foreground"
         >
-          Matty AI
+          <img src={logo} alt="Matty AI Logo" className="h-11 w-auto object-contain" />
+          <span>Matty AI</span>
         </Link>
         <Button
           variant="ghost"
@@ -66,7 +68,7 @@ const Sidebar = ({ onClose }) => {
             key={item.name}
             asChild
             variant={location.pathname.startsWith(item.path) ? "secondary" : "ghost"}
-            className="w-full justify-start"
+            className="w-full justify-start font-utility uppercase tracking-widest text-xs"
           >
             <Link to={item.path}>
               <item.icon className="mr-2 h-4 w-4" />
@@ -80,7 +82,7 @@ const Sidebar = ({ onClose }) => {
           onClick={toggleTheme}
           variant="ghost"
           size="sm"
-          className="w-full justify-start"
+          className="w-full justify-start font-utility uppercase tracking-widest text-xs"
         >
           {theme === "light" ? (
             <Moon className="mr-2 h-4 w-4" />

@@ -76,10 +76,10 @@ const Card = ({ title, icon, children, description }) => {
             {icon}
           </div>
         </div>
-        <h2 className="dark:text-white text-xl opacity-0 group-hover/canvas-card:opacity-100 relative z-10 text-black mt-4 font-bold group-hover/canvas-card:text-white group-hover/canvas-card:-translate-y-2 transition duration-200">
+        <h2 className="dark:text-white text-xl opacity-0 group-hover/canvas-card:opacity-100 relative z-10 text-black mt-4 font-bold group-hover/canvas-card:text-white group-hover/canvas-card:-translate-y-2 transition duration-200 font-display uppercase tracking-wider">
           {title}
         </h2>
-        <p className="dark:text-white/80 text-sm opacity-0 group-hover/canvas-card:opacity-100 relative z-10 text-black/80 mt-2 group-hover/canvas-card:text-white/80 group-hover/canvas-card:-translate-y-2 transition duration-200">
+        <p className="dark:text-white/80 text-sm opacity-0 group-hover/canvas-card:opacity-100 relative z-10 text-black/80 mt-2 group-hover/canvas-card:text-white/80 group-hover/canvas-card:-translate-y-2 transition duration-200 font-editorial leading-relaxed">
           {description}
         </p>
       </div>
@@ -92,10 +92,10 @@ const HowItWorksSection = () => {
     <section id="how-it-works" className="py-20 sm:py-32">
       <div className="mx-auto max-w-7xl px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 font-display uppercase tracking-wider">
             Create in 3 Simple Steps
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-secondary-text max-w-2xl mx-auto font-editorial leading-relaxed">
             Transform your ideas into stunning designs with our intuitive workflow
           </p>
         </div>

@@ -49,7 +49,7 @@ export const getUserTeams = asyncHandler(async (req, res, next) => {
       options: { lean: true }
     })
     .lean()
-    .timeout(5000);
+    .maxTimeMS(5000);
 
   if (!user) {
     return next(new ErrorHandler("User not found", 404));

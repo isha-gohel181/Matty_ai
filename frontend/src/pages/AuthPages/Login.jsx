@@ -116,7 +116,7 @@ const Login = () => {
               type="button"
               variant="outline"
               className="w-full bg-white/10 border-white/20 text-foreground hover:bg-white/20"
-              onClick={() => window.location.href = 'http://localhost:3000/api/v1/auth/google'}
+              onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/google`}
             >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                 <path

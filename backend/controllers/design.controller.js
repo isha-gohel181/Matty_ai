@@ -97,7 +97,7 @@ const getMyDesigns = asyncHandler(async (req, res, next) => {
       .skip(skip)
       .limit(limitNum)
       .lean()
-      .timeout(5000),
+      .maxTimeMS(5000),
     Design.countDocuments(query)
   ]);
 

@@ -88,6 +88,33 @@ const incrementUsage = async (userId, serviceType) => {
   await user.save();
 };
 
+// Helper function to handle Gemini API errors gracefully
+const handleGeminiError = (error, defaultMessage, next) => {
+  console.error(defaultMessage + ":", error);
+
+  if (error.status === 429) {
+    return next(new ErrorHandler("AI quota exceeded. Please check your Gemini API key or billing details in .env.", 429));
+  }
+
+  if (error.status === 403) {
+    return next(new ErrorHandler("AI access forbidden. Please check if your API key has the necessary permissions.", 403));
+  }
+
+  if (error.status === 400) {
+    return next(new ErrorHandler("Invalid request to AI service or invalid API key.", 400));
+  }
+
+  if (error.status === 404) {
+    return next(new ErrorHandler("Requested AI model was not found.", 404));
+  }
+
+  if (error.message && (error.message.includes("API key") || error.message.includes("API_KEY"))) {
+    return next(new ErrorHandler("Invalid or missing Gemini API key.", 400));
+  }
+
+  return next(new ErrorHandler(defaultMessage, 500));
+};
+
 // Initialize the Google Generative AI client
 let genAI;
 if (process.env.GEMINI_API_KEY) {
@@ -114,7 +141,7 @@ const getDesignSuggestions = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     let fullPrompt;
     let includeTemplate = generateTemplate;
@@ -174,8 +201,7 @@ const getDesignSuggestions = asyncHandler(async (req, res, next) => {
     // Increment usage after successful response
     await incrementUsage(req.user._id, 'aiSuggestions');
   } catch (error) {
-    console.error("Error generating design suggestions:", error);
-    return next(new ErrorHandler("Failed to generate design suggestions", 500));
+    return handleGeminiError(error, "Failed to generate design suggestions", next);
   }
 });
 
@@ -213,7 +239,7 @@ const generateColorPalette = asyncHandler(async (req, res, next) => {
     const hexPalette = Array.from(colors).slice(0, 5); // Take up to 5 unique colors
 
     // Use Gemini to suggest complementary colors
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     const prompt = `
       You are a color design expert. Given the following dominant colors extracted from an image: ${hexPalette.join(', ')}.
@@ -245,8 +271,7 @@ const generateColorPalette = asyncHandler(async (req, res, next) => {
     // Increment usage after successful response
     await incrementUsage(req.user._id, 'colorPalettes');
   } catch (error) {
-    console.error("Error generating color palette:", error);
-    return next(new ErrorHandler("Failed to generate color palette", 500));
+    return handleGeminiError(error, "Failed to generate color palette", next);
   }
 });
 
@@ -262,7 +287,7 @@ const generateTemplateData = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     const fullPrompt = `
       You are an expert graphic designer and template creator for a design application using Excalidraw.
@@ -310,8 +335,7 @@ const generateTemplateData = asyncHandler(async (req, res, next) => {
       templateData: jsonResponse
     });
   } catch (error) {
-    console.error("Error generating template data:", error);
-    return next(new ErrorHandler("Failed to generate template data", 500));
+    return handleGeminiError(error, "Failed to generate template data", next);
   }
 });
 

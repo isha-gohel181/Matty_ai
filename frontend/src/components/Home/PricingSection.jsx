@@ -93,12 +93,12 @@ const PricingSection = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
             <Sparkles size={16} />
-            <span className="text-sm font-medium">Flexible Pricing</span>
+            <span className="text-xs font-utility uppercase tracking-widest font-semibold">Flexible Pricing</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 font-display uppercase tracking-wider">
             Choose Your Plan
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-secondary-text max-w-2xl mx-auto font-editorial leading-relaxed">
             Unlock the full potential of AI-powered design tools. Choose the plan that fits your needs.
           </p>
         </motion.div>
@@ -122,21 +122,21 @@ const PricingSection = () => {
               )}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                    <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-sm font-semibold shadow-lg">
+                    <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-semibold shadow-lg font-utility uppercase tracking-widest">
                       ⭐ Most Popular
                     </span>
                   </div>
                 )}
 
                 <CardHeader className="text-center pb-8">
-                  <CardTitle className="text-xl sm:text-2xl font-bold">{plan.name}</CardTitle>
-                  <div className="mt-6">
-                    <span className="text-4xl sm:text-5xl font-bold bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  <CardTitle className="text-xl sm:text-2xl font-bold font-display uppercase tracking-wider">{plan.name}</CardTitle>
+                  <div className="mt-6 flex items-baseline justify-center">
+                    <span className="text-4xl sm:text-5xl font-bold bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent font-display uppercase">
                       {plan.price}
                     </span>
-                    <span className="text-muted-foreground text-lg">/{plan.period}</span>
+                    <span className="text-muted-foreground text-xs font-utility uppercase tracking-widest ml-1">/{plan.period}</span>
                   </div>
-                  <CardDescription className="mt-3 text-base">{plan.description}</CardDescription>
+                  <CardDescription className="mt-3 text-base font-editorial text-body-text">{plan.description}</CardDescription>
                 </CardHeader>
 
                 <CardContent className="grow">
@@ -153,7 +153,7 @@ const PricingSection = () => {
                         <div className="shrink-0 w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center mt-0.5">
                           <Check className="h-3.5 w-3.5 text-green-500" strokeWidth={3} />
                         </div>
-                        <span className="text-sm text-foreground ml-3">{feature}</span>
+                        <span className="text-xs font-utility tracking-wider text-body-text ml-3">{feature}</span>
                       </motion.li>
                     ))}
                   </ul>
@@ -161,7 +161,7 @@ const PricingSection = () => {
 
                 <CardFooter className="pt-6">
                   <Button
-                    className="w-full font-semibold"
+                    className="w-full font-semibold font-utility uppercase tracking-widest text-xs py-3"
                     variant={plan.buttonVariant}
                     size="lg"
                     onClick={() => handlePlanSelect(plan.name)}
@@ -181,7 +181,7 @@ const PricingSection = () => {
           transition={{ delay: 0.4 }}
           className="text-center mt-12"
         >
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground font-utility uppercase tracking-widest text-[10px]">
             All plans include a 30-day money-back guarantee. No setup fees, cancel anytime.
           </p>
         </motion.div>

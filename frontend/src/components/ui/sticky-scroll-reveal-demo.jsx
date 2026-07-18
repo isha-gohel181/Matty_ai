@@ -12,7 +12,7 @@ const content = [
       <div className="h-full w-full bg-linear-to-br from-cyan-500 to-emerald-500 flex items-center justify-center p-10">
         <div className="flex flex-col items-center space-y-4">
           <Dices size={64} className="text-white" />
-          <p className="text-white text-center font-semibold">Intuitive Interface</p>
+          <p className="text-white text-center font-semibold font-utility uppercase tracking-widest text-xs">Intuitive Interface</p>
         </div>
       </div>
     ),
@@ -25,7 +25,7 @@ const content = [
       <div className="h-full w-full bg-linear-to-br from-pink-500 to-indigo-500 flex items-center justify-center p-10">
         <div className="flex flex-col items-center space-y-4">
           <Bot size={64} className="text-white" />
-          <p className="text-white text-center font-semibold">Smart Tools</p>
+          <p className="text-white text-center font-semibold font-utility uppercase tracking-widest text-xs">Smart Tools</p>
         </div>
       </div>
     ),
@@ -38,7 +38,7 @@ const content = [
       <div className="h-full w-full bg-linear-to-br from-orange-500 to-yellow-500 flex items-center justify-center p-10">
         <div className="flex flex-col items-center space-y-4">
           <Share2 size={64} className="text-white" />
-          <p className="text-white text-center font-semibold">Multiple Formats</p>
+          <p className="text-white text-center font-semibold font-utility uppercase tracking-widest text-xs">Multiple Formats</p>
         </div>
       </div>
     ),
@@ -51,7 +51,7 @@ const content = [
       <div className="h-full w-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center p-10">
         <div className="flex flex-col items-center space-y-4">
           <Palette size={64} className="text-white" />
-          <p className="text-white text-center font-semibold">Ready-to-Use Templates</p>
+          <p className="text-white text-center font-semibold font-utility uppercase tracking-widest text-xs">Ready-to-Use Templates</p>
         </div>
       </div>
     ),
@@ -64,7 +64,7 @@ const content = [
       <div className="h-full w-full bg-linear-to-br from-blue-500 to-cyan-500 flex items-center justify-center p-10">
         <div className="flex flex-col items-center space-y-4">
           <Wand2 size={64} className="text-white" />
-          <p className="text-white text-center font-semibold">Advanced Features</p>
+          <p className="text-white text-center font-semibold font-utility uppercase tracking-widest text-xs">Advanced Features</p>
         </div>
       </div>
     ),
@@ -77,7 +77,7 @@ const content = [
       <div className="h-full w-full bg-linear-to-br from-green-500 to-teal-500 flex items-center justify-center p-10">
         <div className="flex flex-col items-center space-y-4">
           <Download size={64} className="text-white" />
-          <p className="text-white text-center font-semibold">Quick & Easy</p>
+          <p className="text-white text-center font-semibold font-utility uppercase tracking-widest text-xs">Quick & Easy</p>
         </div>
       </div>
     ),

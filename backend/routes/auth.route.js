@@ -18,9 +18,9 @@ router.get('/google', (req, res, next) => {
 // Google OAuth callback
 router.get('/google/callback', (req, res, next) => {
   if (!isGoogleConfigured) {
-    return res.redirect('http://localhost:5173/login?error=oauth_not_configured');
+    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=oauth_not_configured`);
   }
-  passport.authenticate('google', { failureRedirect: 'http://localhost:5173/login' })(req, res, (err) => {
+  passport.authenticate('google', { failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login` })(req, res, (err) => {
     if (err) return next(err);
     // On success, continue to token generation
     (async () => {
@@ -47,10 +47,10 @@ router.get('/google/callback', (req, res, next) => {
         res.cookie("refreshToken", refreshToken, options);
         
         // Redirect to OAuth success page
-        res.redirect('http://localhost:5173/oauth-success');
+        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/oauth-success`);
       } catch (error) {
         console.error('OAuth callback error:', error);
-        res.redirect('http://localhost:5173/login?error=oauth_failed');
+        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=oauth_failed`);
       }
     })();
   });
@@ -62,7 +62,7 @@ router.get('/logout', (req, res) => {
     if (err) {
       console.error('Logout error:', err);
     }
-    res.redirect('http://localhost:5173/login');
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/login`);
   });
 });
 

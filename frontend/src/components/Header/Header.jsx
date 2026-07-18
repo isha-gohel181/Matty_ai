@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useTheme } from "@/context/ThemeContext.jsx";
 import { selectIsAuthenticated, logoutUser } from "@/redux/slice/user/user.slice.js";
 
+import logo from "@/assets/Mattty_ai_logo.png";
+
 const Header = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -42,8 +44,9 @@ const Header = () => {
         <div className="flex items-center justify-between rounded-full bg-background/30 backdrop-blur-md border border-white/10 p-3 px-6 shadow-lg">
           
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-foreground tracking-wide">
-            Matty AI
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logo} alt="Matty AI Logo" className="h-11 w-auto object-contain" />
+            <span className="text-2xl font-bold font-display uppercase tracking-wider text-foreground">Matty AI</span>
           </Link>
 
           {/* Desktop Menu */}
@@ -52,7 +55,7 @@ const Header = () => {
               <a
                 key={idx}
                 href={link.href}
-                className="relative overflow-hidden text-foreground/80 hover:text-foreground transition-colors font-medium after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-current after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                className="relative overflow-hidden text-foreground/80 hover:text-foreground transition-colors font-medium after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-current after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100 font-utility uppercase tracking-widest text-xs"
               >
                 {link.name}
               </a>
@@ -65,7 +68,7 @@ const Header = () => {
               onClick={toggleTheme}
               variant="ghost"
               size="sm"
-              className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition"
+              className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition font-utility uppercase tracking-widest text-xs"
             >
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
@@ -74,14 +77,14 @@ const Header = () => {
                 <Button
                   onClick={() => navigate('/dashboard/editor')}
                   variant="ghost"
-                  className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition"
+                  className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition font-utility uppercase tracking-widest text-xs px-5"
                 >
                   Dashboard
                 </Button>
                 <Button
                   onClick={handleLogout}
                   variant="ghost"
-                  className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition"
+                  className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition font-utility uppercase tracking-widest text-xs px-5"
                 >
                   Log Out
                 </Button>
@@ -91,14 +94,14 @@ const Header = () => {
                 <Button
                   onClick={() => navigate('/login')}
                   variant="ghost"
-                  className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition"
+                  className="rounded-full text-foreground/80 hover:text-foreground hover:bg-accent transition font-utility uppercase tracking-widest text-xs px-5"
                 >
                   Log In
                 </Button>
 
                 <Button
                   onClick={() => navigate('/signup')}
-                  className="rounded-full px-5"
+                  className="rounded-full px-5 font-utility uppercase tracking-widest text-xs"
                 >
                   Sign Up
                 </Button>
@@ -122,7 +125,7 @@ const Header = () => {
               <a
                 key={idx}
                 href={link.href}
-                className="relative overflow-hidden text-foreground/80 hover:text-foreground transition-colors font-medium after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-current after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                className="relative overflow-hidden text-foreground/80 hover:text-foreground transition-colors font-medium after:absolute after:-bottom-px after:left-0 after:w-full after:h-0.5 after:bg-current after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100 font-utility uppercase tracking-widest text-xs"
                 onClick={() => setOpen(false)}
               >
                 {link.name}
@@ -136,7 +139,7 @@ const Header = () => {
                     setOpen(false);
                   }}
                   variant="ghost"
-                  className="text-foreground/80 hover:text-foreground transition font-medium justify-start"
+                  className="text-foreground/80 hover:text-foreground transition font-medium justify-start font-utility uppercase tracking-widest text-xs"
                 >
                   Dashboard
                 </Button>
@@ -146,7 +149,7 @@ const Header = () => {
                     setOpen(false);
                   }}
                   variant="ghost"
-                  className="text-foreground/80 hover:text-foreground transition font-medium justify-start"
+                  className="text-foreground/80 hover:text-foreground transition font-medium justify-start font-utility uppercase tracking-widest text-xs"
                 >
                   Log Out
                 </Button>
@@ -155,7 +158,7 @@ const Header = () => {
               <>
                 <Link
                   to="/login"
-                  className="text-foreground/80 hover:text-foreground transition font-medium"
+                  className="text-foreground/80 hover:text-foreground transition font-medium font-utility uppercase tracking-widest text-xs pl-4"
                   onClick={() => setOpen(false)}
                 >
                   Log In
@@ -165,7 +168,7 @@ const Header = () => {
                     navigate('/signup');
                     setOpen(false);
                   }}
-                  className="rounded-full w-full"
+                  className="rounded-full w-full font-utility uppercase tracking-widest text-xs"
                 >
                   Sign Up
                 </Button>

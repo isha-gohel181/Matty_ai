@@ -50,10 +50,11 @@ const FeaturesSection = () => {
 
       <div className="mx-auto max-w-screen-xl px-4">
 
-        <h2 className="text-center text-3xl sm:text-4xl font-bold text-foreground">Everything You Need to Create</h2>
-
+        <h2 className="text-center text-3xl sm:text-5xl font-bold text-foreground font-display uppercase tracking-wider">Everything You Need to Create</h2>
+        <p className="text-center font-editorial text-lg text-secondary-text max-w-xl mx-auto mt-4 leading-relaxed">
+          High-end design utilities built for speed, quality, and complete creative freedom.
+        </p>
         <div className="mt-16">
-
           <StickyScrollRevealDemo />
 
         </div>

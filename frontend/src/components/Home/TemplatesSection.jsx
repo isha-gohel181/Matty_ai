@@ -45,8 +45,8 @@ const TemplatesSection = () => {
     return (
         <section id="templates" className="py-20 sm:py-32">
             <div className="mx-auto max-w-7xl px-4">
-                <h2 className="text-center text-3xl sm:text-4xl font-bold text-foreground">Kickstart Your Creativity</h2>
-                <p className="text-center mt-4 text-muted-foreground">Explore templates for every need.</p>
+                <h2 className="text-center text-3xl sm:text-5xl font-bold text-foreground font-display uppercase tracking-wider">Kickstart Your Creativity</h2>
+                <p className="text-center mt-4 text-secondary-text font-editorial text-lg leading-relaxed max-w-xl mx-auto">Explore templates for every need.</p>
 
                 {loading && (
                     <div className="flex justify-center items-center mt-16 h-64">
@@ -88,10 +88,10 @@ const TemplatesSection = () => {
                                     {/* Clean Content */}
                                     <div className="relative h-full flex flex-col justify-end p-6">
                                         <div className="space-y-1">
-                                            <h3 className="text-lg font-semibold text-white group-hover:text-xl transition-all duration-300">
+                                            <h3 className="text-lg font-bold text-white transition-all duration-300 font-display uppercase tracking-wider">
                                                 {template.title}
                                             </h3>
-                                            <p className="text-sm text-gray-200/80 font-medium">
+                                            <p className="text-xs text-body-text font-utility uppercase tracking-widest">
                                                 {template.category}
                                             </p>
                                         </div>
@@ -127,9 +127,9 @@ const TemplatesSection = () => {
 
                                 {/* Button content */}
                                 <div className="relative flex items-center space-x-3">
-                                    <span className="text-lg tracking-wide">Explore More Templates</span>
+                                    <span className="text-xs font-utility uppercase tracking-widest font-semibold">Explore More Templates</span>
                                     <div className="relative">
-                                        <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>
                                     </div>

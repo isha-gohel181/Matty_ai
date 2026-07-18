@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import logo from "@/assets/Mattty_ai_logo.png";
 
 const Footer = () => {
   const footerLinks = {
@@ -38,10 +39,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <Link to="/" className="text-2xl font-bold text-foreground tracking-wide mb-4 inline-block">
-              Matty AI
+            <Link to="/" className="flex items-center gap-2 text-2xl font-bold font-display uppercase tracking-wider mb-4 inline-flex text-foreground">
+              <img src={logo} alt="Matty AI Logo" className="h-11 w-auto object-contain" />
+              <span>Matty AI</span>
             </Link>
-            <p className="text-muted-foreground text-sm mb-4 max-w-sm">
+            <p className="text-muted-foreground text-sm mb-4 max-w-sm font-editorial">
               Transform your ideas into stunning designs with AI-powered tools. 
               Create professional graphics in minutes, not hours.
             </p>
@@ -63,13 +65,13 @@ const Footer = () => {
           {/* Links Sections */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h3 className="font-semibold text-foreground mb-4">{category}</h3>
+              <h3 className="font-semibold text-foreground mb-4 font-display uppercase tracking-widest text-xs">{category}</h3>
               <ul className="space-y-3">
                 {links.map((link, index) => (
                   <li key={index}>
                     <a
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors font-utility uppercase tracking-widest"
                     >
                       {link.name}
                     </a>
@@ -83,17 +85,17 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground font-utility uppercase tracking-widest">
               &copy; {new Date().getFullYear()} Matty AI. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-utility uppercase tracking-widest">
                 Privacy
               </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-utility uppercase tracking-widest">
                 Terms
               </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors font-utility uppercase tracking-widest">
                 Cookies
               </a>
             </div>

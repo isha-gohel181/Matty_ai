@@ -41,6 +41,7 @@ pids
 **/backend/build/
 **/backend/dist/
 **/backend/.cache/
+**/backend/public/temp/
 
 # ========================================
 # IDE & OS junk
