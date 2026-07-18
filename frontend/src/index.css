@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Saira+Condensed:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Saira+Condensed:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -6,6 +6,7 @@
 
 @theme inline {
 
+  --font-sans: "Plus Jakarta Sans", sans-serif;
   --font-display: "Saira Condensed", sans-serif;
   --font-editorial: "EB Garamond", serif;
   --font-utility: "JetBrains Mono", monospace;
@@ -86,20 +87,24 @@
   --animate-marquee: marquee var(--duration) infinite linear;
 
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+
   @keyframes marquee {
-  from {
-    transform: translateX(0);
+    from {
+      transform: translateX(0);
     }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
+
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
     }
   }
+
   @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
+    from {
+      transform: translateY(0);
     }
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
+
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
     }
   }
 }
@@ -182,6 +187,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -192,6 +198,7 @@
   from {
     background-position: 0% 50%;
   }
+
   to {
     background-position: 100% 50%;
   }
@@ -199,11 +206,15 @@
 
 /* Hide scrollbar */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+  display: none;
+  /* Chrome, Safari and Opera */
 }
 
 /* Custom Google Fonts Utilities */
@@ -217,4 +228,113 @@
 
 .font-utility {
   font-family: 'JetBrains Mono', monospace;
+}
+
+/* ==========================================================================
+   Global Brand Typography Overrides (Unlayered for CSS Cascade Priority)
+   ========================================================================== */
+
+/* Default application body font fallback */
+body:not(.excalidraw *) {
+  font-family: var(--font-sans) !important;
+}
+
+/* Headings */
+h1:not(.excalidraw *) {
+  font-family: var(--font-display) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 700 !important;
+}
+h2:not(.excalidraw *) {
+  font-family: var(--font-display) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 600 !important;
+}
+h3:not(.excalidraw *) {
+  font-family: var(--font-display) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Paragraphs & Muted Descriptions */
+p.text-muted-foreground,
+span.text-muted-foreground,
+.text-muted-foreground,
+.text-secondary-text {
+  font-family: var(--font-editorial) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Dashboard Metric Figures & Totals */
+.text-xl.font-bold,
+.text-2xl.font-bold,
+.text-3xl.font-bold,
+.text-4xl.font-bold,
+.text-5xl.font-bold {
+  font-family: var(--font-utility) !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Card Stats Grid & Key-Value Metadata block items */
+.bg-muted p,
+.bg-secondary p,
+.bg-accent p,
+.text-xs:not(p.text-muted-foreground) {
+  font-family: var(--font-utility) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Buttons and Action items */
+button:not(.excalidraw *), 
+[role="button"]:not(.excalidraw *),
+.button-ui {
+  font-family: var(--font-utility) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Forms and Inputs */
+input:not(.excalidraw *), 
+select:not(.excalidraw *), 
+textarea:not(.excalidraw *),
+kbd {
+  font-family: var(--font-utility) !important;
+}
+
+/* Tables & Lists */
+th {
+  font-family: var(--font-utility) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.7rem !important;
+}
+td {
+  font-family: var(--font-utility) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Component Slots (Cards, Badges) */
+[data-slot="card-title"] {
+  font-family: var(--font-utility) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+}
+[data-slot="card-description"] {
+  font-family: var(--font-editorial) !important;
+  font-size: 0.85rem !important;
+  line-height: 1.4 !important;
+  color: var(--color-body-text) !important;
+}
+[data-slot="badge"] {
+  font-family: var(--font-utility) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.65rem !important;
 }

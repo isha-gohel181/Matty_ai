@@ -263,14 +263,14 @@ const Editor = () => {
             <Button 
               size="sm" 
               variant={(showAiSuggestions || showColorPalette) ? "default" : "outline"}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 font-utility uppercase tracking-widest text-xs"
             >
               <Bot className="h-4 w-4" />
               AI Tools
               <ChevronDown className="h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent align="end" className="w-48 font-utility uppercase tracking-wider text-xs">
             <DropdownMenuItem 
               onClick={() => {
                 if (!showAiSuggestions) {
@@ -280,11 +280,11 @@ const Editor = () => {
                   setShowAiSuggestions(false);
                 }
               }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 cursor-pointer"
             >
-              <Sparkles className="h-4 w-4" />
+              <Sparkles className="h-4 w-4 text-primary" />
               AI Suggestions
-              {showAiSuggestions && <span className="ml-auto text-xs text-muted-foreground">Active</span>}
+              {showAiSuggestions && <span className="ml-auto text-[10px] text-muted-foreground">Active</span>}
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => {
@@ -295,25 +295,25 @@ const Editor = () => {
                   setShowColorPalette(false);
                 }
               }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 cursor-pointer"
             >
-              <Palette className="h-4 w-4" />
+              <Palette className="h-4 w-4 text-primary" />
               Color Palette
-              {showColorPalette && <span className="ml-auto text-xs text-muted-foreground">Active</span>}
+              {showColorPalette && <span className="ml-auto text-[10px] text-muted-foreground">Active</span>}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button size="sm" onClick={() => handleExport("png")}>
-          <Download className="mr-2 h-4 w-4" /> PNG
+        <Button size="sm" onClick={() => handleExport("png")} className="font-utility uppercase tracking-widest text-xs">
+          <Download className="mr-1 h-4 w-4" /> PNG
         </Button>
 
-        <Button size="sm" onClick={() => handleExport("pdf")}>
-          <FileText className="mr-2 h-4 w-4" /> PDF
+        <Button size="sm" onClick={() => handleExport("pdf")} className="font-utility uppercase tracking-widest text-xs">
+          <FileText className="mr-1 h-4 w-4" /> PDF
         </Button>
 
-        <Button size="sm" onClick={handleSave} disabled={loading}>
-          <Save className="mr-2 h-4 w-4" />
+        <Button size="sm" onClick={handleSave} disabled={loading} className="font-utility uppercase tracking-widest text-xs">
+          <Save className="mr-1 h-4 w-4" />
           {loading ? "Saving..." : "Save"}
         </Button>
 
@@ -322,8 +322,8 @@ const Editor = () => {
           setTitle("Untitled Design");
           setKey((prev) => prev + 1);
           navigate("/dashboard/editor");
-        }}>
-          <Trash2 className="mr-2 h-4 w-4" /> New
+        }} className="font-utility uppercase tracking-widest text-xs">
+          <Trash2 className="mr-1 h-4 w-4" /> New
         </Button>
       </div>
 

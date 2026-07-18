@@ -101,8 +101,8 @@ const Sidebar = ({ onClose }) => {
                 <AvatarFallback>{getInitials(user?.fullName)}</AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-semibold text-sm">{user?.fullName}</p>
-                <p className="text-xs text-muted-foreground">{user?.email}</p>
+                <p className="font-utility uppercase tracking-wider text-xs font-bold text-foreground">{user?.fullName}</p>
+                <p className="font-utility text-[10px] text-muted-foreground mt-0.5">{user?.email}</p>
               </div>
             </div>
           </DropdownMenuTrigger>

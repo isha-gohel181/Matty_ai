@@ -28,10 +28,10 @@ const AiSuggestions = ({ onApplyTemplate }) => {
 
   return (
     <div className="absolute bottom-4 right-4 w-72 z-10">
-      <Card className="bg-card/95 backdrop-blur-sm shadow-lg">
+      <Card className="bg-card/95 backdrop-blur-sm shadow-lg border-border">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <Sparkles className="text-primary w-4 h-4" />
+          <CardTitle className="flex items-center gap-2 text-xs font-utility uppercase tracking-widest font-bold">
+            <Sparkles className="text-primary w-4 h-4 animate-pulse" />
             AI Suggestions
           </CardTitle>
         </CardHeader>
@@ -42,9 +42,9 @@ const AiSuggestions = ({ onApplyTemplate }) => {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleGetSuggestions()}
-              className="text-sm"
+              className="text-xs font-utility"
             />
-            <Button onClick={handleGetSuggestions} disabled={loading} size="sm">
+            <Button onClick={handleGetSuggestions} disabled={loading} size="sm" className="font-utility uppercase tracking-widest text-[10px]">
               {loading ? <Loader className="animate-spin w-4 h-4" /> : <Lightbulb className="w-4 h-4" />}
             </Button>
           </div>
@@ -57,7 +57,7 @@ const AiSuggestions = ({ onApplyTemplate }) => {
             />
             <label
               htmlFor="generate-template"
-              className="text-xs text-muted-foreground cursor-pointer"
+              className="text-[10px] font-utility uppercase tracking-wider text-muted-foreground cursor-pointer"
             >
               Generate complete template
             </label>
@@ -72,7 +72,7 @@ const AiSuggestions = ({ onApplyTemplate }) => {
                 className="space-y-3"
               >
                 <div>
-                  <h4 className="font-medium text-xs mb-1 text-muted-foreground">Colors</h4>
+                  <h4 className="font-utility uppercase tracking-wider text-[10px] font-bold text-muted-foreground mb-1">Colors</h4>
                   <div className="flex gap-1">
                     {suggestions.palette.map((color) => (
                       <div
@@ -84,15 +84,15 @@ const AiSuggestions = ({ onApplyTemplate }) => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-xs mb-1 text-muted-foreground">Fonts</h4>
-                  <div className="text-xs space-y-1">
-                    <p><strong>H:</strong> {suggestions.fonts.heading}</p>
-                    <p><strong>B:</strong> {suggestions.fonts.body}</p>
+                  <h4 className="font-utility uppercase tracking-wider text-[10px] font-bold text-muted-foreground mb-1">Fonts</h4>
+                  <div className="text-xs space-y-1 font-utility lowercase text-secondary-text">
+                    <p><strong className="uppercase">H:</strong> {suggestions.fonts.heading}</p>
+                    <p><strong className="uppercase">B:</strong> {suggestions.fonts.body}</p>
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-xs mb-1 text-muted-foreground">Layout</h4>
-                  <p className="text-xs italic">"{suggestions.layout}"</p>
+                  <h4 className="font-utility uppercase tracking-wider text-[10px] font-bold text-muted-foreground mb-1">Layout</h4>
+                  <p className="text-xs italic font-editorial text-secondary-text leading-relaxed">"{suggestions.layout}"</p>
                 </div>
 
                 {template && (
@@ -100,7 +100,7 @@ const AiSuggestions = ({ onApplyTemplate }) => {
                     <Button
                       onClick={handleApplyTemplate}
                       size="sm"
-                      className="w-full"
+                      className="w-full font-utility uppercase tracking-widest text-[10px]"
                       variant="default"
                     >
                       <Wand2 className="w-3 h-3 mr-1" />

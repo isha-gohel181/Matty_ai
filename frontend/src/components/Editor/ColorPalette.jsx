@@ -33,9 +33,9 @@ const ColorPalette = () => {
 
   return (
     <div className="absolute bottom-4 right-4 w-80 z-10">
-      <Card className="bg-card/95 backdrop-blur-sm shadow-lg">
+      <Card className="bg-card/95 backdrop-blur-sm shadow-lg border-border">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-sm">
+          <CardTitle className="flex items-center gap-2 text-xs font-utility uppercase tracking-widest font-bold">
             <Palette className="text-primary w-4 h-4" />
             AI Color Palette
           </CardTitle>
@@ -53,15 +53,16 @@ const ColorPalette = () => {
               onClick={() => fileInputRef.current.click()}
               variant="outline"
               size="sm"
-              className="flex-1"
+              className="flex-1 font-utility uppercase tracking-widest text-[10px]"
             >
-              <Upload className="mr-2 h-4 w-4" />
+              <Upload className="mr-1.5 h-3.5 w-3.5" />
               {imageFile ? imageFile.name : 'Select Image'}
             </Button>
             <Button
               onClick={handleGeneratePalette}
               disabled={loading || !imageFile}
               size="sm"
+              className="font-utility uppercase tracking-widest text-[10px]"
             >
               {loading ? <Loader className="animate-spin w-4 h-4" /> : <Palette className="w-4 h-4" />}
             </Button>
@@ -76,7 +77,7 @@ const ColorPalette = () => {
                 className="space-y-3"
               >
                 <div>
-                  <h4 className="font-medium text-xs mb-1 text-muted-foreground">Primary Colors</h4>
+                  <h4 className="font-utility uppercase tracking-wider text-[10px] font-bold text-muted-foreground mb-1">Primary Colors</h4>
                   <div className="flex gap-1 flex-wrap">
                     {palette.primary.map((color, index) => (
                       <div
@@ -90,7 +91,7 @@ const ColorPalette = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-xs mb-1 text-muted-foreground">Complementary Colors</h4>
+                  <h4 className="font-utility uppercase tracking-wider text-[10px] font-bold text-muted-foreground mb-1">Complementary Colors</h4>
                   <div className="flex gap-1 flex-wrap">
                     {palette.complementary.map((color, index) => (
                       <div
@@ -104,7 +105,7 @@ const ColorPalette = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-xs mb-1 text-muted-foreground">Full Palette</h4>
+                  <h4 className="font-utility uppercase tracking-wider text-[10px] font-bold text-muted-foreground mb-1">Full Palette</h4>
                   <div className="flex gap-1 flex-wrap">
                     {palette.fullPalette.map((color, index) => (
                       <div
@@ -117,7 +118,7 @@ const ColorPalette = () => {
                     ))}
                   </div>
                 </div>
-                <Button onClick={handleClear} variant="outline" size="sm" className="w-full">
+                <Button onClick={handleClear} variant="outline" size="sm" className="w-full font-utility uppercase tracking-widest text-[10px]">
                   Clear
                 </Button>
               </motion.div>
